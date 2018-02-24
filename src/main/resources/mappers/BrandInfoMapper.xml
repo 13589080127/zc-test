@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zcs.test.mapper.BrandInfoMapper">
+    <!--  根据发卡机构号和品牌号查询品牌信息 -->
+    <select id="findByBrhIdAndBrandId" resultType="BrandInfo">
+        select  brh_id as brhId,
+        brand_id as brandId,
+        brh_name as brhName,
+        brand_name as brandName,
+        card_type as cardType
+        from tsm_brand_info
+        where 	brh_id=#{brhId}
+        and		brand_id=#{brandId}
+    </select>
+</mapper>
