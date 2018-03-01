@@ -1,5 +1,7 @@
 package com.zcs.test.Algorithm;
 
+import java.util.*;
+
 /**
  * 常规算法类
  *
@@ -73,12 +75,109 @@ public class algorithm {
         return count;
     }
 
+    /**
+     * 计算两个数组的交集,交集里面的数字可重复的
+     * @param nums1
+     * @param nums2
+     */
+    public static int[] intersection(int[] nums1, int[] nums2) {
+        //先对两个数组进行排序，然后用两个指针进行比较
+        List<Integer> list = new ArrayList<Integer>();
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int i = 0;
+        int j = 0;
+        while(i<nums1.length && j<nums2.length){
+            if(nums1[i]==nums2[j]){
+                list.add(nums1[i]);
+                ++i;
+                ++j;
+            }else if(nums1[i]>nums2[j]){
+                ++j;
+            }else{
+                ++i;
+            }
+        }
+        int[] result = new int[list.size()];
+        for(int k=0;k<list.size();k++){
+            result[k] = list.get(k);
+        }//如果交集里面的元素去重，那么可以用hashset等方法
+        return result;
+    }
+
+
+    /**
+     * //如果交集里面的元素去重，那么可以用hashset等方法
+     * @param nums1
+     * @param nums2
+     */
+    public static int[] intersectionOnly(int[] nums1, int[] nums2) {
+//        //先对两个数组进行排序，然后用两个指针进行比较,把结果放入hashset里面去掉重复元素
+//        Set<Integer> set = new HashSet<>();
+//        Arrays.sort(nums1);
+//        Arrays.sort(nums2);
+//        int i = 0;
+//        int j = 0;
+//        while(i<nums1.length && j<nums2.length){
+//            if(nums1[i]==nums2[j]){
+//                set.add(nums1[i]);
+//                ++i;
+//                ++j;
+//            }else if(nums1[i]>nums2[j]){
+//                ++j;
+//            }else{
+//                ++i;
+//            }
+//        }
+//        int[] result = new int[set.size()];
+//       Iterator<Integer> it = set.iterator();
+//       int count = 0;
+//       while(it.hasNext()){
+//           result[count]=it.next();
+//           ++count;
+//       }
+//        return result;
+
+        //先把一个数组放入hashMap，然后再放入另外一个数组
+        Map<Integer,Integer> map = new HashMap<>();
+        for(int i = 0;i<nums1.length;i++){
+            map.put(nums1[i],i);
+        }
+        Map<Integer,Integer> resMap = new HashMap<>();
+        for(int j=0;j<nums2.length;j++){
+            if(map.containsKey(nums2[j])){
+                resMap.put(nums2[j],j);
+            }
+        }
+        int[] result = new int[resMap.size()];
+        int count = 0;
+        for(Integer it : resMap.keySet()){
+            result[count] = it;
+            ++count;
+        }
+        return result;
+    }
+
+
     public static void main(String[] args) {
         //两个整数a,b，不使用+号的情况下，计算这两个数字的和
 //      System.out.println(aplusb(3,0));
         //设计一个算法，计算出n阶乘中尾部零的个数
 //        System.out.println(trailingZeros(5555550000000L));
 
+        //计算两个数组的交集,可重复的
+//        int[] nums1 = {1, 2, 3, 1};
+//        int[] nums2 = {2, 3,1};
+//        int[] ints = intersection(nums1,nums2);
+//        for(int i=0;i<ints.length;i++){
+//            System.out.print(ints[i]+" ");
+//        }
+//
+//        //计算两个数组的交集,不可重复的
+//        int[] ints1 = intersectionOnly(nums1,nums2);
+//        for(int i=0;i<ints1.length;i++){
+//            System.out.print(ints1[i]+" ");
+//        }
 
     }
 }
