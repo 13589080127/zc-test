@@ -14,7 +14,7 @@ import org.slf4j.Logger;
  * @author 樊计玉
  */
 @RestController
-public class BussinessController {
+public class BussinessController{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private FactoryService factoryService;
