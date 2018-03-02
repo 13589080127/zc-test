@@ -158,6 +158,47 @@ public class algorithm {
         return result;
     }
 
+    /**
+     * 实现一个leftpad库(左填充)
+     * @param originalStr
+     * @param size
+     * @return
+     */
+     public static String leftPad(String originalStr, int size) {
+        // Write your code here
+        //先判断字符串的长度，然后从下标0开始插入空格
+        StringBuffer sb = new StringBuffer();
+        if(size>originalStr.length()){
+            //判断这个数字大于字符串的长度，否则不需要左填充
+            sb.append(originalStr);
+            for(int i = 0;i<size-originalStr.length();i++){
+                sb.insert(0," ");
+            }
+            return sb.toString();
+        }
+        return originalStr;
+    }
+    /**
+     * 实现一个leftpad库(左填充，替换)
+     * @param originalStr
+     * @param size
+     * @return
+     */
+    static public String leftPad(String originalStr, int size, char padChar) {
+        // write your code here
+        //先判断字符串的长度，然后从下标0开始插入空格
+        StringBuffer sb = new StringBuffer();
+        if(size>originalStr.length()){
+            //判断这个数字大于字符串的长度，否则不需要左填充
+            sb.append(originalStr);
+            for(int i = 0;i<size-originalStr.length();i++){
+                sb.insert(0,padChar);
+            }
+            return sb.toString();
+        }
+        return originalStr;
+    }
+
 
     public static void main(String[] args) {
         //两个整数a,b，不使用+号的情况下，计算这两个数字的和
@@ -179,5 +220,9 @@ public class algorithm {
 //            System.out.print(ints1[i]+" ");
 //        }
 
+        //左填充,不替换的情况
+        System.out.println(leftPad("fod",5));
+        //左填充,替换的情况
+        System.out.println(leftPad("fod",5,'2'));
     }
 }
