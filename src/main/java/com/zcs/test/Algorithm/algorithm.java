@@ -1,5 +1,7 @@
 package com.zcs.test.Algorithm;
 
+import com.alibaba.fastjson.JSON;
+
 import java.util.*;
 
 /**
@@ -199,6 +201,25 @@ public class algorithm {
         return originalStr;
     }
 
+    /**
+     * 检查两棵二叉树是否等价。
+     * 等价的意思是说，首先两棵二叉树必须拥有相同的结构，并且每个对应位置上的节点上的数都相等。
+     * @param a
+     */
+    public static boolean isIdentical(TreeNode a, TreeNode b) {
+        // write your code here
+        if(a==null && b==null){
+            return true;
+        }else if(a==null || b==null){
+            return false;
+        }else if(a.val!=b.val){
+            return false;
+        }else if(a.val==b.val){
+            return (isIdentical(a.left,b.left)&&isIdentical(a.right,b.right));
+        }
+        return false;
+    }
+
 
     public static void main(String[] args) {
         //两个整数a,b，不使用+号的情况下，计算这两个数字的和
@@ -220,9 +241,20 @@ public class algorithm {
 //            System.out.print(ints1[i]+" ");
 //        }
 
-        //左填充,不替换的情况
-        System.out.println(leftPad("fod",5));
-        //左填充,替换的情况
-        System.out.println(leftPad("fod",5,'2'));
+//        //左填充,不替换的情况
+//        System.out.println(leftPad("fod",5));
+//        //左填充,替换的情况
+//        System.out.println(leftPad("fod",5,'2'));
+
+        //检查两棵二叉树是否等价。
+        TreeNode a = new TreeNode(1);
+        a.left=new TreeNode(2);
+        a.right=new TreeNode(2);
+        a.left.left = new TreeNode(4);
+        TreeNode b = new TreeNode(1);
+        b.left=new TreeNode(2);
+        b.right=new TreeNode(2);
+        b.left.left = new TreeNode(4);
+        System.out.println(isIdentical(a,b));
     }
 }
