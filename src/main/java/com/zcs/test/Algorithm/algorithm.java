@@ -220,10 +220,63 @@ public class algorithm {
         return false;
     }
 
+    /**
+     * 给定一个字符串所表示的括号序列，包含以下字符： '(', ')', '{', '}', '[' and ']'， 判定是否是有效的括号序列。
+     * 括号必须依照 "()" 顺序表示， "()[]{}" 是有效的括号，但 "([)]"则是无效的括号。
+     * E push(E item)
+     * 把项压入堆栈顶部。
+     * E pop()
+     * 移除堆栈顶部的对象，并作为此函数的值返回该对象。
+     * E peek()
+     * 查看堆栈顶部的对象，但不从堆栈中移除它。
+     * boolean empty()
+     * 测试堆栈是否为空。
+     * @param s
+     */
+    public static boolean isValidParentheses(String s) {
+        //先判断字符串是否为空，是否是2的倍数，否则就肯定是无效的括号
+        if(s==null || s.length()==0 || s.length()%2!=0) {
+            return false;
+        }
+        Stack<Character> stack = new Stack<>();
+        //定义一个标识
+        boolean flag = true;
+        for(int i=0;i<s.length();i++){
+            if(s.charAt(i)=='(' || s.charAt(i)=='[' || s.charAt(i)=='{'){
+                stack.push(s.charAt(i));
+            }else if(s.charAt(i)==')'){
+                if(!stack.empty() && stack.peek()=='('){
+                    stack.pop();
+                }else{
+                    flag = false;
+                    break;
+                }
+            }else if(s.charAt(i)==']'){
+                if(!stack.empty() && stack.peek()=='['){
+                    stack.pop();
+                }else{
+                    flag = false;
+                    break;
+                }
+            }else if(s.charAt(i)=='}'){
+                if(!stack.empty() && stack.peek()=='{'){
+                    stack.pop();
+                }else{
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        if(!stack.empty()){
+            flag = false;
+        }
+        return flag;
+    }
 
     public static void main(String[] args) {
         //两个整数a,b，不使用+号的情况下，计算这两个数字的和
 //      System.out.println(aplusb(3,0));
+
         //设计一个算法，计算出n阶乘中尾部零的个数
 //        System.out.println(trailingZeros(5555550000000L));
 
@@ -246,15 +299,18 @@ public class algorithm {
 //        //左填充,替换的情况
 //        System.out.println(leftPad("fod",5,'2'));
 
-        //检查两棵二叉树是否等价。
-        TreeNode a = new TreeNode(1);
-        a.left=new TreeNode(2);
-        a.right=new TreeNode(2);
-        a.left.left = new TreeNode(4);
-        TreeNode b = new TreeNode(1);
-        b.left=new TreeNode(2);
-        b.right=new TreeNode(2);
-        b.left.left = new TreeNode(4);
-        System.out.println(isIdentical(a,b));
+//        //检查两棵二叉树是否等价。
+//        TreeNode a = new TreeNode(1);
+//        a.left=new TreeNode(2);
+//        a.right=new TreeNode(2);
+//        a.left.left = new TreeNode(4);
+//        TreeNode b = new TreeNode(1);
+//        b.left=new TreeNode(2);
+//        b.right=new TreeNode(2);
+//        b.left.left = new TreeNode(4);
+//        System.out.println(isIdentical(a,b));
+
+        //判断字符串是否是有效的括号
+        System.out.println(isValidParentheses("[](){"));
     }
 }
