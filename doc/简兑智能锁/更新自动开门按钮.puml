@@ -1,0 +1,10 @@
+@startuml
+title:更新自动开门按钮
+autonumber
+app->apps:更新自动开门按钮
+note left:cardId 通行证Id\nkeyId 钥匙id \nonOff 开关0:关，1：开
+apps->ams:更新自动开门 cardId，keyId,onOff
+ams->ams:更新自动开门开关
+ams-->apps:更新结果
+apps-->app:更新结果
+@enduml

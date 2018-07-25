@@ -1,0 +1,25 @@
+@startuml
+title:获取通行证列表
+autonumber
+app->apps: 获取通行证列表
+apps->apps:判断当前用户是否已经实名
+alt 未实名
+apps-->app:返回用户未实名
+end
+apps->apps:查询当前下已开通的通行证和未开通的通行证信息
+apps->apps:找出已激活的通行证卡号
+apps->ams:入参卡号数组，请求日期，查询当前通行证对应的钥匙和锁信息
+ams->ams:判断卡号状态
+ams->ams:根据卡号，和状态，和请求日期 ，请求日期大于开始时间，小于结束时间查询钥匙信息表，得到钥匙信息list
+ams->ams:循环钥匙信息list根据锁id查询终端信息表得到钥匙参数下发周期，和钥匙开锁类型，锁名称，锁mac地址，lKey
+ams->ams:判断记录的结束时间（end_dt）和请求日期+参数下发周期
+alt 如果end_dt小于请求日期+参数下发周期
+ams->ams:end_dt赋值给authEndDt
+else 如果end_dt大于请求日期+参数下发周期
+ams->ams:authEndDt即=请求日期+参数下发周期
+end
+ams->ams:根据钥匙id查询t_key_unlock_time表得到当前钥匙允许开锁时间段list
+ams-->apps:返回卡list 及卡对应的(锁名称，钥匙有效期，钥匙授权有效期，锁mac地址，钥匙允许开锁时间段list，钥匙的开锁类型，钥匙参数下载标志,lkey)list
+apps->apps: 对卡对应的list里面的每条数据进行签名
+apps-->app: 返回卡列表和卡对应的钥匙list
+@enduml

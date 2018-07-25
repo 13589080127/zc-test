@@ -1,0 +1,14 @@
+@startuml
+title:获取默认卡的卡信息
+autonumber
+app->apps:获取默认卡的卡信息
+note left:cardType 卡类型 0：简兑，2：通行证
+apps->apps:根据token获得userId
+apps->apps:根据appId，status，和cardType，userId查询ps_app_brand_info，ps_card_info表
+apps->apps:判断用户是否存在此品牌的卡片
+alt 不存在
+apps-->app:返回 result=0,相应的机构号和品牌号
+else 存在
+apps-->app:返回 result=1,卡号
+end
+@enduml

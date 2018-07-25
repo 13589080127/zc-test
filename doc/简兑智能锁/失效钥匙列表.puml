@@ -1,0 +1,9 @@
+@startuml
+title:失效钥匙列表
+autonumber
+app->apps:查询失效钥匙列表
+apps->ams:根据通行证编号查询失效钥匙列表
+ams->ams:根据cardId和注销状态查询钥匙基本信息表
+ams-->apps:失效结果列表
+app-->app:失效结果列表
+@enduml
