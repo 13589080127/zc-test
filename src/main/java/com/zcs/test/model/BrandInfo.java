@@ -15,4 +15,6 @@ public class BrandInfo implements Serializable{
     private String brandId;
 
     private String brandName;
+
+    private Integer count;
 }
