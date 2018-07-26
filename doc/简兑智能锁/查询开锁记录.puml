@@ -1,0 +1,6 @@
+@startuml
+title:查询开锁记录
+autonumber
+app->apps:查询开锁记录 /app/personal/unLock/list.do
+note left:
+@enduml
