@@ -2,8 +2,9 @@
 title:上传开锁记录
 autonumber
 app->apps:上传开锁记录
-note left:集合：\ncardId 通行证编号 \ntxnDt yyyymmdd 交易日志 \ntxnTm hhmmss\ntermId 锁id \nunLockType 开锁类型\n000010-蓝牙\n000020-密码\n000030-NFC\n000040-扫码
-apps->ams:批量上传开锁记录
+note left:集合：\ncardId 通行证编号 \ntxnDt yyyymmdd 交易日日期 \ntxnTm hhmmss 交易时间\ntermId 锁id \nunLockType 开锁类型\n000010-蓝牙\n000020-密码\n000030-NFC\n000040-扫码
+apps->apps:通过通行证编号查询得到机构号
+apps->ams:批量上传开锁记录 通行证编号，机构号，..
 ams->ams:批量插入t_term_txn_dtl表
 ams-->apps:插入结果
 apps-->app:上传结果
