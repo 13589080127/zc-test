@@ -2,5 +2,12 @@
 title:查询开锁记录
 autonumber
 app->apps:查询开锁记录 /app/personal/unLock/list.do
-note left:
+note left: startNum 第几条记录开始 \npageSize 需要几条记录
+apps->apps:根据token获取userId
+apps->apps:根据userId查询当前用户下所有的通行证id
+apps->ams:通行证编号数组 查询开锁记录
+ams->ams:根据通行证编号数据查询开锁流水表 ，通过机构号关联t_brh_info得到机构名称，通过锁id管理钥匙信息得到锁名称
+ams->ams:拼装返回信息
+ams-->apps:返回查询结果
+apps-->app:返回查询结果
 @enduml
