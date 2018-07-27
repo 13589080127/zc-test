@@ -8,7 +8,7 @@ import java.util.*;
  * @author dzm
  * @create 2018-02-26 18:16
  **/
-public class algorithm {
+public class Algorithm {
     /**
      * 两个整数a,b，不使用+号的情况下，计算这两个数字的和
      */
