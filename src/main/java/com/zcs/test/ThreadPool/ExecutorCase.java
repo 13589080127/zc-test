@@ -4,7 +4,7 @@ import java.util.concurrent.*;
 
 /**
  * java线程池例子
- *
+ *https://www.jianshu.com/p/87bff5cc8d8c
  * @author dzm
  * @create 2018-07-26 18:18
  **/
