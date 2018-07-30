@@ -2,10 +2,10 @@
 title:失效钥匙列表
 autonumber
 app->apps:查询失效钥匙列表
-note left:卡号数组
-apps->ams:根据通行证编号数组查询失效钥匙列表
-ams->ams:根据cardId和注销状态查询钥匙基本信息表
+apps->apps:根据token获取userId
+apps->apps:根据userId获取当前用户下所有的通行证
+apps->ams:根据通行证编号数组，开始条数和每页显示条数查询失效钥匙列表
+ams->ams:根据cardId列表和注销状态查询钥匙基本信息表，open_brh_id关联t_brh_info得到机构名称
 ams-->apps:失效结果列表
-apps->apps:根据通行证编号获得机构名称
 app-->app:失效结果列表
 @enduml
