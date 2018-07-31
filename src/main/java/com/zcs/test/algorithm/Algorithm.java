@@ -1,4 +1,4 @@
-package com.zcs.test.Algorithm;
+package com.zcs.test.algorithm;
 
 import java.util.*;
 
