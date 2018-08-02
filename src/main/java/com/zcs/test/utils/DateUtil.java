@@ -1,7 +1,5 @@
 package com.zcs.test.utils;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,8 +7,6 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 时间转换工具类
@@ -245,33 +241,19 @@ public class DateUtil {
     }
 
 
-//    /**
-//     * 获取指定时间的开始时间
-//     * @param date
-//     * @return
-//     */
-//    public static Date getDateStart(Date date){
-//        Calendar c = Calendar.getInstance();
-//        c.setTimeInMillis(date.getTime());
-//        c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), 0, 0, 0);
-//        return strToDate(DateFormatUtils.format(c, TIME_FORMATTER_BASIC),TIME_FORMATTER_BASIC);
-//    }
-//
-//    /**
-//     * 获取指定时间的结束时间
-//     * @author Administrator
-//     * @date   2015年12月17日
-//     * @param date
-//     * @return
-//     */
-//    public static Date getDateEnd(Date date){
-//        Calendar c = Calendar.getInstance();
-//        c.setTimeInMillis(date.getTime());
-//        c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), 23, 59, 59);
-//        return strToDate(DateFormatUtils.format(c, TIME_FORMATTER_BASIC),TIME_FORMATTER_BASIC);
-//    }
-
-
+    /**
+     * 当前时间离23:59:59的秒数
+     * @return
+     * @throws ParseException
+     */
+    public static int getCurrtTimeToZeroTime() throws ParseException{
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+        Date endDate=df.parse("23:59:59");
+        String currtDateStr=df.format(new Date());
+        Date currentDate=df.parse(currtDateStr);
+        long interval =(endDate.getTime()-currentDate.getTime())/1000;
+        return (int) interval;
+    }
 
 
 }
