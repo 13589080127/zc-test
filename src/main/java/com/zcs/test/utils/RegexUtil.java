@@ -1,5 +1,7 @@
 package com.zcs.test.utils;
 
+import java.util.regex.Pattern;
+
 /**
  * 正则工具类
  *
@@ -8,6 +10,15 @@ package com.zcs.test.utils;
  **/
 public class RegexUtil {
 
-    //校验中文
+    /**
+     * 校验是否满足正则表达式
+     * @param testStr  被校验的字符串
+     * @param regexStr 正则表达式
+     * @return
+     */
+    public static boolean checkPattern(String testStr,String regexStr){
+        return Pattern.matches(regexStr,testStr);
+    }
+
 
 }
