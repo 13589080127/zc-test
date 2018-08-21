@@ -1,0 +1,20 @@
+@startuml
+title:扫描二维码
+autonumber
+app->app:扫描二维码
+app->app:解析二维码，验证签名
+alt 验证签名失败
+app->app:提示用户 离线签名验证失败
+else 验证签名成功
+app->apps:/code/add/record 增加扫码次数
+note left:扫描者地址位置，经度纬度，码类型：唯码，溯码，扫描用户
+apps-->app:返回 增加结果
+app->vue:请求url 传递参数
+note left:appid 应用id\nappversion 应用版本\nuserid 用户id\npadcode\nqrcodeId 二维码id\nscanType 码类型0溯码，1唯码\nuid 唯码唯一号
+vue->vue:获取参数,请求服务端，对请求信息进行加密
+vue->apps:获取码溯源信息
+apps->apps:解密数据
+apps->apps:查询码信息
+apps-->vue:返回查询结果
+end
+@enduml

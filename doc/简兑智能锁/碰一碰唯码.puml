@@ -1,0 +1,17 @@
+@startuml
+title:碰一碰唯码
+autonumber
+app->app:碰一碰，读取码信息
+app->app:解析码，验证签名
+alt 验证签名失败 离线签名验证失败
+app->app:提示用户
+else 验证签名成功
+app->apps:/code/add/record 增加扫码次数
+note left:碰码者地址位置，经度纬度，码类型：唯码，溯码，登录用户
+apps-->app:返回 增加结果
+app->js:传递参数
+note left:appid 应用id\nappversion 应用版本\nuserid 用户id\npadcode\nqrcodeId 二维码id\nscanType 码类型0溯码，1唯码\nuid 唯码唯一号
+js->vue:获取参数
+vue->apps:获取码详情
+end
+@enduml

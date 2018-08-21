@@ -1,5 +1,8 @@
 package com.zcs.test.utils;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -229,15 +232,7 @@ public class DateUtil {
         if(date1 == null || date2 == null){
             throw new Exception("日期参数不能为空");
         }
-        long time1 = date1.getTime();
-        long time2 = date2.getTime();
-        if(time1 > time2){
-            return 1;
-        }
-        if(time1 == time2 ){
-            return 0;
-        }
-        return -1;
+        return date1.compareTo(date2);
     }
 
 
