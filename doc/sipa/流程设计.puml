@@ -1,0 +1,45 @@
+@startuml
+autonumber
+/'extApp->extApps:用户注册
+extApps->uc:用户注册
+note left:手机号码\n密码\n应用id\n渠道id
+uc->uc:保存用户信息，产生用户id
+uc-->extApps:返回用户注册结果
+extApps-->extApp:返回用户注册结果
+...'/
+extApp->extApp:点击钱包
+extApp->sdk:appId,cUserId,加载钱包
+sdk->sdk:加载设备se
+sdk->sdk:根据cUserId加载用户se
+alt 加载失败
+sdk->tsm:发起申请/找回用户se
+note left: appId,cUserId
+tsm->tsm:判断是找回还是申请
+tsm->tsm:根据配置查询当前app是否需要进行注册并登录
+tsm->tsm:查询url
+tsm->uc:根据appid和cUserId查询用户中心用户信息
+uc-->tsm:返回查询结果
+alt 必须是内部app且用户已经注册
+tsm->tsm:取得手机号码
+tsm->apps:用户注册并登录
+note left:appId,cUserId,默认密码，手机号码
+apps->apps:执行用户注册并登录
+apps-->tsm:返回登录token,实名认证状态，支付密码设置状态，默认卡号
+alt 找回用户se
+tsm->tsm:不再进行新设备登录的校验（<font color=red>待验证</font>）
+else 申请用户se
+tsm->tsm:调用用户中心进行身份确认，（内部app，且用户必须是已经注册）
+end
+tsm->tsm:申请用户se
+tsm-->sdk:返回用户se，token,实名认证状态，支付密码设置状态，默认卡号
+sdk->sdk:保存用户se，本地存储token，根据实名认证状态提示实名认证，支付密码设置状态提示设置支付密码
+end
+else 加载成功且token不存在
+sdk->apps:根据cuserId获取token
+apps->apps:验签
+apps->apps:根据cUserId进行登录
+apps-->sdk:登录token,userId,实名信息状态，支付密码状态
+end
+
+
+@enduml
