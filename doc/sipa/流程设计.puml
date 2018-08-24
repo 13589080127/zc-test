@@ -26,7 +26,13 @@ note left:appId,cUserId,默认密码，手机号码
 apps->apps:执行用户注册并登录
 apps-->tsm:返回登录token,实名认证状态，支付密码设置状态，默认卡号
 alt 找回用户se
-tsm->tsm:不再进行新设备登录的校验（<font color=red>待验证</font>）
+tsm->tsm:需要判断是否是新设备
+alt 需要发送短信验证码
+tsm->tsm:发送短信
+tsm-->sdk:需要新设备登录，且返回手机号码
+else 不需要发送短信验证码
+tsm->tsm:找回用户se
+end
 else 申请用户se
 tsm->tsm:调用用户中心进行身份确认，（内部app，且用户必须是已经注册）
 end
@@ -39,6 +45,10 @@ sdk->apps:根据cuserId获取token
 apps->apps:验签
 apps->apps:根据cUserId进行登录
 apps-->sdk:登录token,userId,实名信息状态，支付密码状态
+else token过期
+sdk->apps:请求apps
+apps-->sdk:返回token过期
+sdk->sdk:返回到sdk入口，并删除本地token,友好提示用户
 end
 
 

@@ -1,0 +1,53 @@
+@startuml
+title:sdk立即购买商品
+autonumber
+app->app:点击立即购买
+app->sdk:立即购买
+note left:价格（单位分），商品名称，商户号，cUserId,appId，二维码全部信息,订单号
+sdk->sdk:加载设备se
+sdk->apps:根据cUserId查询用户是否实名
+apps->apps:根据cuserId查询用户实名状态
+apps-->sdk:返回实名状态
+sdk->sdk:判断实名状态
+alt 用户没实名
+sdk->sdk:弹出请先绑定银行卡开通支付功能
+sdk->sdk:点击立即开通
+sdk->sdk:加载用户se
+sdk->sdk:跳转绑卡页面
+sdk->apps:绑卡请求
+apps->sdk:绑卡结果
+sdk->sdk:判断是否有设置支付密码
+else 用户已经实名
+sdk->sdk:加载用户se
+alt 加载用户se失败
+sdk->apps:申请用户se
+apps-->sdk:返回申请用户se结果
+sdk->sdk:判断是否是新设备，新设备跳转到短信验证页面
+end
+sdk->sdk:判断是否有设置支付密码
+alt 没设置支付密码
+sdk->sdk:输入支付密码
+sdk->apps:设置支付密码
+apps-->sdk:设置支付密码结果
+sdk->sdk:付款详情页面
+end
+sdk->apps:获取支付活动 merId(商户号),cardId(付款卡号),checkData(验卡信息)
+note left:/app/personal/sweepPayment/way
+apps->apps:验证卡信息，根据卡号和商户号获取支付活动
+apps-->sdk:返回支付活动
+sdk->sdk:判断余额和支付金额大小
+sdk->sdk:点击确认付款
+sdk->sdk:弹出输入密码框
+sdk->apps:校验支付密码
+apps-->sdk:返回校验结果，和payPwdPassToken
+sdk->apps:/app/personal/sweepPayment/pay
+note left:transList(消费的支付活动),paymentToken(支付活动凭证),amount(交易总金额),cardId(付款卡号)..
+apps->apps:调用交换消费
+apps->apps:推送通知给sdk
+apps->extApps:通知对方服务器支付结果 带签名
+apps-->sdk:返回支付结果
+sdk->sdk:展示支付结果
+sdk->app:通知支付结果
+end
+
+@enduml
