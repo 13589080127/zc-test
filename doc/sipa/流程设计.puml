@@ -1,25 +1,16 @@
 @startuml
 autonumber
-/'extApp->extApps:用户注册
-extApps->uc:用户注册
-note left:手机号码\n密码\n应用id\n渠道id
-uc->uc:保存用户信息，产生用户id
-uc-->extApps:返回用户注册结果
-extApps-->extApp:返回用户注册结果
-...'/
 extApp->extApp:点击钱包
-extApp->sdk:appId,cUserId,加载钱包
+extApp->sdk:appId,cUserId,<font color=blue>用户中心下发的cToken</font>加载钱包
 sdk->sdk:加载设备se
 sdk->sdk:根据cUserId加载用户se
 alt 加载失败
 sdk->tsm:发起申请/找回用户se
-note left: appId,cUserId
+note left: appId,cUserId,<font color=blue>用户中心下发的cToken</font>
 tsm->tsm:判断是找回还是申请
-tsm->tsm:根据配置查询当前app是否需要进行注册并登录
-tsm->tsm:查询url
-tsm->uc:根据appid和cUserId查询用户中心用户信息
+tsm->uc:根据appid和cUserId,<font color=blue>用户中心下发的cToken</font>查询用户中心用户信息
 uc-->tsm:返回查询结果
-alt 必须是内部app且用户已经注册
+alt 必须是内部app且用户已经注册<font color=blue>且cToken有效</font>
 tsm->tsm:取得手机号码
 tsm->apps:用户注册并登录
 note left:appId,cUserId,默认密码，手机号码
