@@ -1,0 +1,20 @@
+@startuml
+autonumber
+user->gate:请求getToken
+gate->gate:验证clientId,和companyId
+alt 验证失败
+gate->gate:错误信息信息放在Response body里面
+else 验证成功
+gate->ops:转发请求
+ops-->gate:返回404错误
+end
+gate->gate:后置拦截器
+gate->gate:判断url中是否有getToken关键字
+alt 存在
+gate->gate:生成token放置redis，然后重写response Body 对body进行加密
+else 不存在
+gate->gate:对结果进行解密，重写response body 返回数据
+end
+gate-->user:返回数据
+
+@enduml

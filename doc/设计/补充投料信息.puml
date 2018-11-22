@@ -1,0 +1,17 @@
+@startuml
+title:补充投料信息
+autonumber
+server->db:得到时间戳
+server->db:根据时间查询t_bundle，查询12+（时间戳*2）小时之前没补充的小码包信息
+db->server:返回List数据
+server->es:根据小码包编号查询es
+es->server:返回小码卷数据（都是没有投料环节的码）
+server->server:循环每一个码
+server->server:查询每个码的灌装节点的溯源信息
+server->server:得到每个码的灌装时间戳和产线编号，企业id
+server->db:根据产线编号和企业id得到投料点编号
+db-->server:返回投料点标号
+server->db:根据投料点标号和灌装时间查询t_raw_material（原料表）最新数据只查询一条，根据配料桶编号查询辅料总表得到配置水的重量，配置生产日期，质检人，查询配料详细信息
+server->server:根据模板补充溯源信息
+server->es:插入溯源信息
+@enduml
