@@ -1,4 +1,4 @@
-pragma solidity ^0.4.8;
+epragma solidity ^0.4.8;
 
 /**
  * Math operations with safety checks

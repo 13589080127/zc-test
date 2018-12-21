@@ -1,0 +1,29 @@
+@startuml
+title:数据同步
+depos->depos:当前节点状态是轮值节点时，且节点是挖矿节点
+depos->depos:投票出当前节点进行打块
+depos->depos:开始进行打块 DCtrl.createNewBlock 得到新块信息
+depos->depos:打块成功，将块信息拼装到类信息
+depos->zippo:发送块信息 block header,block body
+zippo->zippo:先进行url拦截，查询当前url是否被拦截
+zippo->dbsync:执行pre拦截器 无操作直接过
+dbsync-->zippo:返回成功
+zippo->depos2:请求接口 块信息
+depos2->depos2:将块高度和bcuid放进pendingBlockCache
+depos2->depos2:将块信息放进queue
+depos2->zippo:返回成功
+zippo->dbsync:响应信息 执行过滤器 oncomplete
+dbsync->dbsync:判断返回数据是否成功
+alt 返回成功
+dbsync->dbsync:将请求成功的标记放入内置 header信息
+end
+dbsync->zippo:返回结果
+zippo->dbsync: 执行后置拦截器 postRoute
+dbsync->dbsync:判断内置 header里面是否存在成功的标记
+alt 没有请求成功的标记
+dbsync->zippo:返回结果
+else 存在请求成功的标记
+dbsync->dbsync:读取http body 转化为block 信息
+dbsync->dbsync:转化实体类型 存储数据库
+end
+@enduml

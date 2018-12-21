@@ -1,6 +1,6 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.22;
 
-contract DrawAuction {
+contract Test {
     //创建合约者
     address owner;
     // 竞拍价
@@ -25,9 +25,9 @@ contract DrawAuction {
 
     //第一方法是 有人出价
     function bid() public payable{
-        require(now<endTime,"竞拍时间已经结束");
+        /*require(now<endTime,"竞拍时间已经结束");
         require(!ended,"竞拍已经结束");
-        require(msg.value>highestBid,"已存在其他竞拍价高于您的竞拍价");
+        require(msg.value>highestBid,"已存在其他竞拍价高于您的竞拍价");*/
         if(highestBid >0){
             pendingReturns[highestBidder] += highestBid;
         }
@@ -48,8 +48,8 @@ contract DrawAuction {
 
     //结束了 完成竞拍
     function actionEnd() public{
-        require(!ended,"当前竞拍已经结束");
-        require(now>endTime,"当前竞拍还没结束");
+   /*     require(!ended,"当前竞拍已经结束");
+        require(now>endTime,"当前竞拍还没结束");*/
         ended = true;
 
         emit AuctionEnded(highestBidder,highestBid);
