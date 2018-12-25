@@ -15,7 +15,7 @@ import java.util.Map;
 @SpringBootTest
 @Slf4j
 public class TransTest extends AbstractTestNGSpringContextTests {
-    String toAddress = "9972cab540f5dfaf9aa2e9113efbb3fedcb9a206";
+    String toAddress = "569dbbb913f8147a29547fbbebfb15bed773c690";
     String mainAddress = "e0c7d2a75ccd61af87aaa818cdcb2246706363a1";
     String txHash = "";
     String amount = "10";//单位（个）
