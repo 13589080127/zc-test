@@ -1,0 +1,12 @@
+@startuml
+title:查询节点账户信息
+autonumber
+actor broserapi as a
+entity dbsync as b
+database db as d
+a->b:查询节点账户的奖励信息
+note left:节点账户地址
+b->d:查询出块信息表 sum(reward) group by account status =1
+d->b:返回节点总奖励
+b->a:返回节点总奖励
+@enduml

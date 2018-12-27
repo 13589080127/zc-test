@@ -1,0 +1,35 @@
+@startuml
+title:用户账户的管理
+autonumber
+actor broserapi as c
+control p22p as a
+entity dbsync as b
+database db as d
+entity account as t
+a->b:广播新块数据 new block \nblock header \nblock body
+b->b:得到当前块高度 根据当前块高度往上查询指定安全块大小
+b->b:得到n块数据 根据块hash进行分组\n得到List<Map<块hash,List<块信息>>>
+b->b:根据当前块高度的父hash轮询查找\n找到后在list进行内存删除\n剩余的块既是需要废弃的块
+b->d:新增当前块信息到数据库 \n将剩余块信息的状态更改为已废弃
+b->b:组装挖矿信息，交易to，交易from\n得到涉及到此笔交易的用户地址(不包含节点账户地址)
+b->d:插入交易信息到数据库中\n插入或者更新用户的地址信息，刷新标记为未刷新
+b->a:返回处理成功
+c->b:根据用户地址查询用户余额信息（余额和erc20的信息）
+b->d:根据地址查询数据库
+d-->b:返回查询结果
+alt 如果当前地址标记为未更新
+b->t:根据地址查询余额和erc20的信息
+t->b:返回查询结果
+b->d:更新account_table的余额信息\nnonce信息\n标记状态\n最后刷新时间
+b->d:插入或者更新erc20_table信息
+else 当前地址标记为已更新
+c->c:判断最后刷新时间和当前时间差的大小
+alt 大于指定大小时间差
+c->t:查询账户信息
+t-->c:返回最新账户信息
+c->b:更新当前账户的余额和erc20的信息
+b->d:更新数据库
+end
+end
+b-->c:返回用户余额erc20相关信息
+@enduml

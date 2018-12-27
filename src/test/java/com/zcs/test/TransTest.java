@@ -15,10 +15,10 @@ import java.util.Map;
 @SpringBootTest
 @Slf4j
 public class TransTest extends AbstractTestNGSpringContextTests {
-    String toAddress = "569dbbb913f8147a29547fbbebfb15bed773c690";
+    String toAddress = "c674ffb16ddc9b87cc6fed33a68f73d9f8eca1a5";
     String mainAddress = "e0c7d2a75ccd61af87aaa818cdcb2246706363a1";
     String txHash = "";
-    String amount = "10";//单位（个）
+    String amount = "100";//单位（个）
     String url = "http://localhost:8000";
     @Test
     public void trans(){
