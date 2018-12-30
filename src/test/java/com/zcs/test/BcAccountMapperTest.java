@@ -20,7 +20,6 @@ public class BcAccountMapperTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private BcAccountMapper bcAccountMapper;
     private static ReentrantLock reentrantLock = new ReentrantLock(true);
-    private static Condition condition = reentrantLock.newCondition();
 
     private static volatile int a = 0;
     @Test

@@ -13,6 +13,16 @@ Doc Writer <fjy170@zcsmart.com>
    梳理节点管理器相关操作：
    . 梳理区块浏览器的各种查询流程
 
+[NOTE]
+- 交易：tx
+- 块：block
+- 账户：account
+- 矿工：miner
+- 附加数据：extData
+- 平均：avg
+- 时间：time
+- 高度：number
+
 [param-info]
 == 参数信息
 
@@ -21,6 +31,11 @@ Doc Writer <fjy170@zcsmart.com>
 - 描述
 
  用来获取额外的参数
+
+- 引用
+
+ @see [additional.proto] message ReqGetAdditional
+ @see [additional.proto] message ResGetAdditional
 
 - 请求地址： /pam/pbget.do
 [source,http,options="nowrap"]
@@ -36,7 +51,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |结果码
 
@@ -44,7 +59,7 @@ Content-Type: application/json
 |`String`
 |平均出块时间
 
-|`tps`
+|`gtdps`
 |`String`
 |每秒产生交易数量
 
@@ -52,19 +67,19 @@ Content-Type: application/json
 |`int`
 |所有区块中的交易总数
 
-|`nodes`
+|`nodesCount`
 |`String`
 |所有节点数量
 
-|`dNodes`
+|`dConnectNodes`
 |`String`
 |已连接的节点数
 
-|`pNodes`
+|`pConnectNodes`
 |`String`
 |待连接的节点数
 
-|`confirm`
+|`confirmTime`
 |`String`
 |最新5块中所有交易的平均确认时间
 
@@ -72,14 +87,14 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "avgBlockTime":"14",
-    "tps":"1",
+    "gtdps":"1",
     "txCount":"20",
-    "nodes":"15",
-    "dNodes":"1",
-    "pNodes":"12",
-    "confirm":"5"
+    "nodesCount":"15",
+    "dConnectNodes":"1",
+    "pConnectNodes":"12",
+    "confirmTime":"5"
 
 }
 ----
@@ -88,6 +103,11 @@ Content-Type: application/json
 - 描述
 
  用来获取所有节点列表
+
+- 引用
+
+ @see [additional.proto] message ReqGetNodes
+ @see [additional.proto] message ResGetNodes
 
 - 请求地址： /pam/pbgns.do
 [source,http,options="nowrap"]
@@ -117,7 +137,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -125,59 +145,55 @@ Content-Type: application/json
 |`int`
 |节点列表的总数
 
-|`nodes`
-|`Object`
+|`nodeInfos`
+|`Array`
 |节点信息
 
-|`nodes.nodeName`
+|`nodeInfos.nodeName`
 |`String`
 |节点名称
 
-|`nodes.uri`
+|`nodeInfos.uri`
 |`String`
 |节点ip
 
-|`nodes.startupTime`
+|`nodeInfos.startupTime`
 |`int`
 |启动时间
 
-|`nodes.pubKey`
+|`nodeInfos.publicKey`
 |`String`
 |该节点的公钥
 
-|`nodes.bcuid`
+|`nodeInfos.bcuid`
 |`String`
 |节点的唯一ID
 
-|`nodes.try_nodeIdx`
+|`nodeInfos.tryNodeIdIndex`
 |`int`
 |节点的随机id
 
-|`nodes.priKey`
-|`String`
-|私钥，记得不要再在全网广播
-
-|`nodes.nodeIdx`
+|`nodeInfos.nodeIdIndex`
 |`int`
 |全网确定之后的节点id
 
-|`nodes.recvCc`
+|`nodeInfos.receiveCount`
 |`int`
 |总收到多少数据
 
-|`nodes.sendCc`
+|`nodeInfos.sendCount`
 |`int`
 |总发送多少数据
 
-|`nodes.blockCc`
+|`nodeInfos.blockCount`
 |`int`
 |总产生了多少个区块！
 
-|`nodes.status`
+|`nodeInfos.status`
 |`String`
 |节点状态
 
-|`nodes.type`
+|`nodeInfos.type`
 |`String`
 |节点类型
 
@@ -185,107 +201,22 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":1,
-    "nodes":[
+    "ret":1,
+    "nodeInfos":[
         {
             "nodeName":"测试节点",
             "uri":"tcp，http/https",
             "startupTime":1452555,
-            "pubKey":"2255",
+            "publicKey":"2255",
             "bcuid":"dsfsdfsdf",
-            "tryNode_idx":22,
-            "priKey":"sdfdsfsdfsd",
-            "nodeIdx":20,
-            "recvCc":15,
-            "sendCc":200,
-            "blockCc":50,
+            "tryNodeIdIndex":22,
+            "nodeIdIndex":20,
+            "receiveCount":15,
+            "sendCount":200,
+            "blockCount":50,
             "status":"10",
             "type":"10"
         },...
-}
-----
-[node-phtot-query]
-=== 查询最近交易柱状图数据
-- 描述
-
- 用来查询最近交易柱状图数据
-
-- 请求地址： /pam/pbgtc.do
-[source,http,options="nowrap"]
-----
-POST /pam/pbgtc.do HTTP/1.1
-Content-Type: application/json
-----
-
-- 请求参数说明
- 无
-
-- 返回参数说明
-|===
-|Path|Type|Description
-
-|`retCode`
-|`int`
-|响应码
-
-|`week`
-|`Object`
-|周
-
-|`week.value`
-|`int`
-|周值
-
-|`day`
-|`Object`
-|天
-
-|`day.value`
-|`int`
-|天值
-
-|`hour`
-|`Object`
-|小时
-
-|`hour.value`
-|`int`
-|小时值
-
-|`ten`
-|`Object`
-|十分钟
-
-|`ten.value`
-|`int`
-|十分钟的数据
-
-|===
-- 返回参数示例
-----
-{
-    "retCode":1,
-    "week":[
-        {
-            "value":1
-        },...
-    ],
-    "day":[
-        {
-            "value":1
-        },...
-    ],
-    "hour":[
-        {
-            "value":1
-        },...
-    ],
-    "ten":[
-        {
-            "value":1
-        },...
-    ]
-
 }
 ----
 [statistics-list]
@@ -293,6 +224,11 @@ Content-Type: application/json
 - 描述
 
  用来根据统计类型获取各种数据的统计
+
+- 引用
+
+ @see [additional.proto] message ReqGetReportInfo
+ @see [additional.proto] message ResGetReportInfo
 
 - 请求地址： /pam/pbrep.do
 [source,http,options="nowrap"]
@@ -326,7 +262,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -346,7 +282,7 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "reportResult":[
         {
             "dateTime":"2018-01-02",
@@ -360,6 +296,11 @@ Content-Type: application/json
 - 描述
 
  用来在首页使用，可以根据多个条件进行查询
+
+- 引用
+
+ @see [additional.proto] message ReqGetAggInfo
+ @see [additional.proto] message ResGetAggInfo
 
 - 请求地址： /pam/pbagg.do
 [source,http,options="nowrap"]
@@ -384,7 +325,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -396,7 +337,7 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "result":"1",
 }
 ----
@@ -408,6 +349,11 @@ Content-Type: application/json
 - 描述
 
  用来根据地址查询账户信息
+
+- 引用
+
+ @see [address.proto] message ReqGetAddrDetailByAddr
+ @see [address.proto] message ResGetAddrDetailByAddr
 
 - 请求地址： /ads/pbgad.do
 [source,http,options="nowrap"]
@@ -442,7 +388,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -450,351 +396,39 @@ Content-Type: application/json
 |`int`
 |总条数
 
-|`address`
+|`addressInfo`
 |`Object`
 |账户信息
 
-|`address.nonce`
+|`addressInfo.nonce`
 |`String`
 |交易次数
 
-|`address.balance`
+|`addressInfo.balance`
 |`String`
 |余额信息
 
-|`address.address`
+|`addressInfo.address`
 |`Array`
 |地址信息
 
-|`address.tokens`
+|`addressInfo.tokens`
 |`Array`
 |token信息
 
-|`address.tokens.token`
+|`addressInfo.tokens.tokenName`
 |`String`
 |token名称
 
-|`address.tokens.balance`
+|`addressInfo.tokens.balance`
 |`String`
 |token余额
 
-|`address.tokens.locked`
+|`addressInfo.tokens.locked`
 |`String`
 |token是否被锁定
 
-|`address.cryptoTokens`
-|`Array`
-|cryptoTokens信息
-
-|`address.cryptoTokens.symbol`
-|`String`
-|cryptoTokens简称
-
-|`address.cryptoTokens.tokens`
-|`Array`
-|cryptoTokens 下面的token
-
-|`address.cryptoTokens.tokens.hash`
-|`String`
-|交易hash
-
-|`address.cryptoTokens.tokens.timestamp`
-|`int`
-|Token创建时间
-
-|`address.cryptoTokens.tokens.index`
-|`int`
-|该Token发行时的索引
-
-|`address.cryptoTokens.tokens.token`
-|`int`
-|该Token的发行总数量
-
-|`address.cryptoTokens.tokens.code`
-|`String`
-|Token的编号
-
-|`address.cryptoTokens.tokens.name`
-|`String`
-|Token的名称
-
-|`address.cryptoTokens.tokens.owner`
-|`String`
-|所有人的账户地址
-
-|`address.cryptoTokens.tokens.nonce`
-|`int`
-|交易次数
-
-|`address.transactions`
-|`Array`
-|交易信息
-
-|`address.transactions.status`
-|`String`
-|交易状态
-
-|`address.transactions.delegates`
-|`Array`
-|代理
-
-|`address.transactions.data`
-|`String`
-|数据
-
-|`address.transactions.txHash`
-|`String`
-|交易hash
-
-|`address.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`address.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`address.transactions.froms`
-|`Array`
-|发起者
-
-|`address.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`address.transactions.froms.fee`
-|`int`
-|手续费
-
-|`address.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`address.transactions.froms.address`
-|`String`
-|地址
-
-|`address.transactions.froms.amount`
-|`String`
-|数量
-
-|`address.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`address.transactions.froms.token`
-|`String`
-|token
-
-|`address.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`address.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.transactions.tos`
-|`Array`
-|接收者信息
-
-|`address.transactions.tos.address`
-|`String`
-|接收者地址
-
-|`address.transactions.tos.amount`
-|`String`
-|数量
-
-|`address.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`address.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.tokenTransactions`
-|`Array`
-|token交易信息
-
-|`address.tokenTransactions.status`
-|`String`
-|交易状态
-
-|`address.tokenTransactions.delegates`
-|`Array`
-|代理
-
-|`address.tokenTransactions.data`
-|`String`
-|数据
-
-|`address.tokenTransactions.txHash`
-|`String`
-|交易hash
-
-|`address.tokenTransactions.blockHeight`
-|`int`
-|块的高度
-
-|`address.tokenTransactions.timeStamp`
-|`int`
-|时间戳
-
-|`address.tokenTransactions.froms`
-|`Array`
-|发起者
-
-|`address.tokenTransactions.froms.nonce`
-|`int`
-|交易次数
-
-|`address.tokenTransactions.froms.fee`
-|`int`
-|手续费
-
-|`address.tokenTransactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`address.tokenTransactions.froms.address`
-|`String`
-|地址
-
-|`address.tokenTransactions.froms.amount`
-|`String`
-|数量
-
-|`address.tokenTransactions.froms.pubKey`
-|`String`
-|公钥
-
-|`address.tokenTransactions.froms.token`
-|`String`
-|token
-
-|`address.tokenTransactions.froms.symbol`
-|`String`
-|币的简称
-
-|`address.tokenTransactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.tokenTransactions.tos`
-|`Array`
-|接收者信息
-
-|`address.tokenTransactions.tos.address`
-|`String`
-|接收者地址
-
-|`address.tokenTransactions.tos.amount`
-|`String`
-|数量
-
-|`address.tokenTransactions.tos.symbol`
-|`String`
-|币的简称
-
-|`address.tokenTransactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.cryptoTokenTransactions`
-|`Array`
-|cryptoToken的交易信息
-
-|`address.cryptoTokenTransactions.status`
-|`String`
-|交易状态
-
-|`address.cryptoTokenTransactions.delegates`
-|`Array`
-|代理
-
-|`address.cryptoTokenTransactions.data`
-|`String`
-|数据
-
-|`address.cryptoTokenTransactions.txHash`
-|`String`
-|交易hash
-
-|`address.cryptoTokenTransactions.blockHeight`
-|`int`
-|块的高度
-
-|`address.cryptoTokenTransactions.timeStamp`
-|`int`
-|时间戳
-
-|`address.cryptoTokenTransactions.froms`
-|`Array`
-|发起者
-
-|`address.cryptoTokenTransactions.froms.nonce`
-|`int`
-|交易次数
-
-|`address.cryptoTokenTransactions.froms.fee`
-|`int`
-|手续费
-
-|`address.cryptoTokenTransactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`address.cryptoTokenTransactions.froms.address`
-|`String`
-|地址
-
-|`address.cryptoTokenTransactions.froms.amount`
-|`String`
-|数量
-
-|`address.cryptoTokenTransactions.froms.pubKey`
-|`String`
-|公钥
-
-|`address.cryptoTokenTransactions.froms.token`
-|`String`
-|token
-
-|`address.cryptoTokenTransactions.froms.symbol`
-|`String`
-|币的简称
-
-|`address.cryptoTokenTransactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.cryptoTokenTransactions.tos`
-|`Array`
-|接收者信息
-
-|`address.cryptoTokenTransactions.tos.address`
-|`String`
-|接收者地址
-
-|`address.cryptoTokenTransactions.tos.amount`
-|`String`
-|数量
-
-|`address.cryptoTokenTransactions.tos.symbol`
-|`String`
-|币的简称
-
-|`address.cryptoTokenTransactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.comments`
-|`String`
-|注释
-
-|`address.bcuid`
+|`addressInfo.bcuid`
 |`String`
 |节点唯一id
 
@@ -802,126 +436,17 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":1,
+    "ret":1,
     "totalCount":11,
-    "address":{
-        "comments":"",
+    "addressInfo":{
         "bcuid":"",
         "nonce":"1",
         "balance":"100000",
         "address":["1","2"],
         "tokens":[
-            {"token":"1","balance":"1","locked":"1"},...
+            {"tokenName":"1","balance":"1","locked":"1"},...
         ],
-        "cryptoTokens":[
-            {"symbol":"eth","tokens":[
-                {
-                    "hash":"222",
-                    "timestamp":123455,
-                    "index":1,
-                    "total":20,
-                    "code":"10",
-                    "name":"12",
-                    "owner":"20",
-                    "nonce":20
-                 },....
-            ]},...
-        ],
-        "transactions":[
-            {
-                "txHash":"2222",
-                "blockHeight":2555,
-                "timeStamp":1455555,
-                "status":"1"
-                "delegates":["1","2"],
-                "data":"",
-                "froms":[
-                    {
-                        "nonce":1,
-                        "fee":20,
-                        "feeLimit":10,
-                        "address":"11111111",
-                        "amount":"20",
-                        "pubKey":"111111",
-                        "token":"ERC-20",
-                        "symbol":"eth",
-                        "cryptoToken":"ddddd"
-                    },...
-                ],
-                "tos":[
-                    {
-                        "address":"dsfjsdkfhsdjkf",
-                        "amount":"20",
-                        "symbol":"eth",
-                        "cryptoToken":"ddddd"
-                    },...
-                ]
-            },...
-        ],
-        "tokenTransactions": [
-             {
-                 "txHash":"2222",
-                 "blockHeight":2555,
-                 "timeStamp":1455555,
-                 "status":"1"
-                 "delegates":["1","2"],
-                 "data":"",
-                 "froms":[
-                     {
-                         "nonce":1,
-                         "fee":20,
-                         "feeLimit":10,
-                         "address":"11111111",
-                         "amount":"20",
-                         "pubKey":"111111",
-                         "token":"ERC-20",
-                         "symbol":"eth",
-                         "cryptoToken":"ddddd"
-                     },...
-                 ],
-                 "tos":[
-                     {
-                         "address":"dsfjsdkfhsdjkf",
-                         "amount":"20",
-                         "symbol":"eth",
-                         "cryptoToken":"ddddd"
-                     },...
-                 ]
-             },...
-        ],
-        "cryptoTokenTransactions":[
-           {
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-           },...
-        ],
-        "address.comments":"矮脚虎王英",
-        "address.bcuid":"UUID"
+        "bcuid":"UUID"
     }
 }
 ----
@@ -930,6 +455,11 @@ Content-Type: application/json
 - 描述
 
  用来根据地址查询账户信息
+
+- 引用
+
+ @see [address.proto] message ReqGetAddrDetailByAddr
+ @see [address.proto] message ResGetAddrDetailByAddr
 
 - 请求地址： /ads/pbgtx.do
 [source,http,options="nowrap"]
@@ -964,355 +494,107 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
-|`address`
+|`addressInfo`
 |`Object`
 |账户信息
 
-|`address.nonce`
+|`addressInfo.nonce`
 |`String`
 |交易次数
 
-|`address.balance`
+|`addressInfo.balance`
 |`String`
 |余额信息
 
-|`address.address`
+|`addressInfo.address`
 |`Array`
 |地址信息
 
-|`address.tokens`
+|`addressInfo.tokens`
 |`Array`
 |token信息
 
-|`address.tokens.token`
+|`addressInfo.tokens.tokenName`
 |`String`
 |token名称
 
-|`address.tokens.balance`
+|`addressInfo.tokens.balance`
 |`String`
 |token余额
 
-|`address.tokens.locked`
+|`addressInfo.tokens.locked`
 |`String`
 |token是否被锁定
 
-|`address.cryptoTokens`
-|`Array`
-|cryptoTokens信息
-
-|`address.cryptoTokens.symbol`
-|`String`
-|cryptoTokens简称
-
-|`address.cryptoTokens.tokens`
-|`Array`
-|cryptoTokens 下面的token
-
-|`address.cryptoTokens.tokens.hash`
-|`String`
-|交易hash
-
-|`address.cryptoTokens.tokens.timestamp`
-|`int`
-|Token创建时间
-
-|`address.cryptoTokens.tokens.index`
-|`int`
-|该Token发行时的索引
-
-|`address.cryptoTokens.tokens.token`
-|`int`
-|该Token的发行总数量
-
-|`address.cryptoTokens.tokens.code`
-|`String`
-|Token的编号
-
-|`address.cryptoTokens.tokens.name`
-|`String`
-|Token的名称
-
-|`address.cryptoTokens.tokens.owner`
-|`String`
-|所有人的账户地址
-
-|`address.cryptoTokens.tokens.nonce`
-|`int`
-|交易次数
-
-|`address.transactions`
+|`addressInfo.txs`
 |`Array`
 |交易信息
 
-|`address.transactions.status`
+|`addressInfo.txs.status`
 |`String`
 |交易状态
 
-|`address.transactions.delegates`
-|`Array`
-|代理
-
-|`address.transactions.data`
+|`addressInfo.txs.data`
 |`String`
 |数据
 
-|`address.transactions.txHash`
+|`addressInfo.txs.txHash`
 |`String`
 |交易hash
 
-|`address.transactions.blockHeight`
+|`addressInfo.txs.blockNumber`
 |`int`
 |块的高度
 
-|`address.transactions.timeStamp`
+|`addressInfo.txs.timeStamp`
 |`int`
 |时间戳
 
-|`address.transactions.froms`
+|`addressInfo.txs.froms`
 |`Array`
 |发起者
 
-|`address.transactions.froms.nonce`
+|`addressInfo.txs.froms.nonce`
 |`int`
 |交易次数
 
-|`address.transactions.froms.fee`
-|`int`
-|手续费
-
-|`address.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`address.transactions.froms.address`
+|`addressInfo.txs.froms.address`
 |`String`
 |地址
 
-|`address.transactions.froms.amount`
+|`addressInfo.txs.froms.amount`
 |`String`
 |数量
 
-|`address.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`address.transactions.froms.token`
+|`addressInfo.txs.froms.tokenName`
 |`String`
 |token
 
-|`address.transactions.froms.symbol`
+|`addressInfo.txs.froms.symbol`
 |`String`
 |币的简称
 
-|`address.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.transactions.tos`
+|`addressInfo.txs.tos`
 |`Array`
 |接收者信息
 
-|`address.transactions.tos.address`
+|`addressInfo.txs.tos.address`
 |`String`
 |接收者地址
 
-|`address.transactions.tos.amount`
+|`addressInfo.txs.tos.amount`
 |`String`
 |数量
 
-|`address.transactions.tos.symbol`
+|`addressInfo.txs.tos.symbol`
 |`String`
 |币的简称
 
-|`address.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.tokenTransactions`
-|`Array`
-|token交易信息
-
-|`address.tokenTransactions.status`
-|`String`
-|交易状态
-
-|`address.tokenTransactions.delegates`
-|`Array`
-|代理
-
-|`address.tokenTransactions.data`
-|`String`
-|数据
-
-|`address.tokenTransactions.txHash`
-|`String`
-|交易hash
-
-|`address.tokenTransactions.blockHeight`
-|`int`
-|块的高度
-
-|`address.tokenTransactions.timeStamp`
-|`int`
-|时间戳
-
-|`address.tokenTransactions.froms`
-|`Array`
-|发起者
-
-|`address.tokenTransactions.froms.nonce`
-|`int`
-|交易次数
-
-|`address.tokenTransactions.froms.fee`
-|`int`
-|手续费
-
-|`address.tokenTransactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`address.tokenTransactions.froms.address`
-|`String`
-|地址
-
-|`address.tokenTransactions.froms.amount`
-|`String`
-|数量
-
-|`address.tokenTransactions.froms.pubKey`
-|`String`
-|公钥
-
-|`address.tokenTransactions.froms.token`
-|`String`
-|token
-
-|`address.tokenTransactions.froms.symbol`
-|`String`
-|币的简称
-
-|`address.tokenTransactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.tokenTransactions.tos`
-|`Array`
-|接收者信息
-
-|`address.tokenTransactions.tos.address`
-|`String`
-|接收者地址
-
-|`address.tokenTransactions.tos.amount`
-|`String`
-|数量
-
-|`address.tokenTransactions.tos.symbol`
-|`String`
-|币的简称
-
-|`address.tokenTransactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.cryptoTokenTransactions`
-|`Array`
-|cryptoToken的交易信息
-
-|`address.cryptoTokenTransactions.status`
-|`String`
-|交易状态
-
-|`address.cryptoTokenTransactions.delegates`
-|`Array`
-|代理
-
-|`address.cryptoTokenTransactions.data`
-|`String`
-|数据
-
-|`address.cryptoTokenTransactions.txHash`
-|`String`
-|交易hash
-
-|`address.cryptoTokenTransactions.blockHeight`
-|`int`
-|块的高度
-
-|`address.cryptoTokenTransactions.timeStamp`
-|`int`
-|时间戳
-
-|`address.cryptoTokenTransactions.froms`
-|`Array`
-|发起者
-
-|`address.cryptoTokenTransactions.froms.nonce`
-|`int`
-|交易次数
-
-|`address.cryptoTokenTransactions.froms.fee`
-|`int`
-|手续费
-
-|`address.cryptoTokenTransactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`address.cryptoTokenTransactions.froms.address`
-|`String`
-|地址
-
-|`address.cryptoTokenTransactions.froms.amount`
-|`String`
-|数量
-
-|`address.cryptoTokenTransactions.froms.pubKey`
-|`String`
-|公钥
-
-|`address.cryptoTokenTransactions.froms.token`
-|`String`
-|token
-
-|`address.cryptoTokenTransactions.froms.symbol`
-|`String`
-|币的简称
-
-|`address.cryptoTokenTransactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.cryptoTokenTransactions.tos`
-|`Array`
-|接收者信息
-
-|`address.cryptoTokenTransactions.tos.address`
-|`String`
-|接收者地址
-
-|`address.cryptoTokenTransactions.tos.amount`
-|`String`
-|数量
-
-|`address.cryptoTokenTransactions.tos.symbol`
-|`String`
-|币的简称
-
-|`address.cryptoTokenTransactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
-|`address.comments`
-|`String`
-|注释
-
-|`address.bcuid`
+|`addressInfo.bcuid`
 |`String`
 |节点唯一id
 
@@ -1320,125 +602,41 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":1,
-    "address":{
-        "comments":"",
+    "ret":1,
+    "addressInfo":{
         "bcuid":"",
         "nonce":"1",
         "balance":"100000",
         "address":["1","2"],
         "tokens":[
-            {"token":"1","balance":"1","locked":"1"},...
+            {"tokenName":"1","balance":"1","locked":"1"},...
         ],
-        "cryptoTokens":[
-            {"symbol":"eth","tokens":[
-                {
-                    "hash":"222",
-                    "timestamp":123455,
-                    "index":1,
-                    "total":20,
-                    "code":"10",
-                    "name":"12",
-                    "owner":"20",
-                    "nonce":20
-                 },....
-            ]},...
-        ],
-        "transactions":[
+        "txs":[
             {
                 "txHash":"2222",
-                "blockHeight":2555,
+                "blockNumber":2555,
                 "timeStamp":1455555,
                 "status":"1"
-                "delegates":["1","2"],
                 "data":"",
                 "froms":[
                     {
                         "nonce":1,
-                        "fee":20,
-                        "feeLimit":10,
                         "address":"11111111",
                         "amount":"20",
-                        "pubKey":"111111",
-                        "token":"ERC-20",
-                        "symbol":"eth",
-                        "cryptoToken":"ddddd"
+                        "tokenName":"ERC-20",
+                        "symbol":"eth"
                     },...
                 ],
                 "tos":[
                     {
                         "address":"dsfjsdkfhsdjkf",
                         "amount":"20",
-                        "symbol":"eth",
-                        "cryptoToken":"ddddd"
+                        "symbol":"eth"
                     },...
                 ]
             },...
         ],
-        "tokenTransactions": [
-             {
-                 "txHash":"2222",
-                 "blockHeight":2555,
-                 "timeStamp":1455555,
-                 "status":"1"
-                 "delegates":["1","2"],
-                 "data":"",
-                 "froms":[
-                     {
-                         "nonce":1,
-                         "fee":20,
-                         "feeLimit":10,
-                         "address":"11111111",
-                         "amount":"20",
-                         "pubKey":"111111",
-                         "token":"ERC-20",
-                         "symbol":"eth",
-                         "cryptoToken":"ddddd"
-                     },...
-                 ],
-                 "tos":[
-                     {
-                         "address":"dsfjsdkfhsdjkf",
-                         "amount":"20",
-                         "symbol":"eth",
-                         "cryptoToken":"ddddd"
-                     },...
-                 ]
-             },...
-        ],
-        "cryptoTokenTransactions":[
-           {
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-           },...
-        ],
-        "address.comments":"矮脚虎王英",
-        "address.bcuid":"UUID"
+        "bcuid":"UUID"
     }
 }
 ----
@@ -1450,6 +648,11 @@ Content-Type: application/json
 - 描述
 
  用来获取最新区块
+
+- 引用
+
+ @see [block.proto] message ReqGetTheBestBlock
+ @see [block.proto] message ResGetTheBestBlock
 
 - 请求地址： /bok/pbgtb.do
 [source,http,options="nowrap"]
@@ -1464,7 +667,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -1480,10 +683,6 @@ Content-Type: application/json
 |`String`
 |上一块的hash
 
-|`block.header.coinbase`
-|`String`
-|coinbase
-
 |`block.header.txTrieRoot`
 |`String`
 |交易的root
@@ -1492,11 +691,11 @@ Content-Type: application/json
 |`int`
 |时间戳
 
-|`block.header.height`
+|`block.header.blockNumber`
 |`int`
 |块的高度
 
-|`block.header.extraData`
+|`block.header.extData`
 |`String`
 |拓展信息
 
@@ -1548,111 +747,18 @@ Content-Type: application/json
 |`String`
 |块内平均交易时间
 
-|`block.body`
-|`Object`
-|块body信息
-
-|`block.body.transactions`
-|`Array`
-|块交易信息
-
-|`block.body.transactions.status`
-|`String`
-|交易状态
-
-|`block.body.transactions.delegates`
-|`Array`
-|代理
-
-|`block.body.transactions.data`
-|`String`
-|数据
-
-|`block.body.transactions.txHash`
-|`String`
-|交易hash
-
-|`block.body.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`block.body.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`block.body.transactions.froms`
-|`Array`
-|发起者
-
-|`block.body.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`block.body.transactions.froms.fee`
-|`int`
-|手续费
-
-|`block.body.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`block.body.transactions.froms.address`
-|`String`
-|地址
-
-|`block.body.transactions.froms.amount`
-|`String`
-|数量
-
-|`block.body.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`block.body.transactions.froms.token`
-|`String`
-|token
-
-|`block.body.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`block.body.transactions.tos`
-|`Array`
-|接收者信息
-
-|`block.body.transactions.tos.address`
-|`String`
-|接收者地址
-
-|block.body.transactions.tos.amount`
-|`String`
-|数量
-
-|`block.body.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "block":{
        "header":{
             "parentHash":"1",
-            "coinbase":"1",
             "txTrieRoot":"1",
             "timestamp":1,
-            "height":1,
-            "extraData":"1",
+            "blockNumber":1,
+            "extData":"1",
             "nonce":"1",
             "blockHash":"1",
             "txHashs":["1","2"],
@@ -1666,37 +772,6 @@ Content-Type: application/json
             },
             "nodes":"",
             "avetx":"2000"
-       },
-       "body":{
-            "transactions":[
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-            ]
        }
     }
 }
@@ -1706,6 +781,11 @@ Content-Type: application/json
 - 描述
 
  用来获取一组块
+
+- 引用
+
+ @see [block.proto] message ReqGetBatchBlocks
+ @see [block.proto] message ResGetBatchBlocks
 
 - 请求地址： /bok/pbgbb.do
 [source,http,options="nowrap"]
@@ -1735,7 +815,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -1744,7 +824,7 @@ Content-Type: application/json
 |总条数
 
 |`blocks`
-|`Object`
+|`Array`
 |块信息
 
 |`blocks.header`
@@ -1755,10 +835,6 @@ Content-Type: application/json
 |`String`
 |上一块的hash
 
-|`blocks.header.coinbase`
-|`String`
-|coinbase
-
 |`blocks.header.txTrieRoot`
 |`String`
 |交易的root
@@ -1767,11 +843,11 @@ Content-Type: application/json
 |`int`
 |时间戳
 
-|`blocks.header.height`
+|`blocks.header.blockNumber`
 |`int`
 |块的高度
 
-|`block.header.extraData`
+|`block.header.extData`
 |`String`
 |拓展信息
 
@@ -1823,158 +899,36 @@ Content-Type: application/json
 |`String`
 |块内平均交易时间
 
-|`blocks.body`
-|`Object`
-|块body信息
-
-|`blocks.body.transactions`
-|`Array`
-|块交易信息
-
-|`blocks.body.transactions.status`
-|`String`
-|交易状态
-
-|`blocks.body.transactions.delegates`
-|`Array`
-|代理
-
-|`blocks.body.transactions.data`
-|`String`
-|数据
-
-|`blocks.body.transactions.txHash`
-|`String`
-|交易hash
-
-|`blocks.body.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`blocks.body.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`blocks.body.transactions.froms`
-|`Array`
-|发起者
-
-|`blocks.body.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`blocks.body.transactions.froms.fee`
-|`int`
-|手续费
-
-|`blocks.body.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`blocks.body.transactions.froms.address`
-|`String`
-|地址
-
-|`blocks.body.transactions.froms.amount`
-|`String`
-|数量
-
-|`blocks.body.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`blocks.body.transactions.froms.token`
-|`String`
-|token
-
-|`blocks.body.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`blocks.body.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`blocks.body.transactions.tos`
-|`Array`
-|接收者信息
-
-|`blocks.body.transactions.tos.address`
-|`String`
-|接收者地址
-
-|blocks.body.transactions.tos.amount`
-|`String`
-|数量
-
-|`blocks.body.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`blocks.body.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "totalCount":1,
-    "blocks":{
-       "header":{
-            "parentHash":"1",
-            "coinbase":"1",
-            "txTrieRoot":"1",
-            "timestamp":1,
-            "height":1,
-            "extraData":"1",
-            "nonce":"1",
-            "blockHash":"1",
-            "txHashs":["1","2"],
-            "txCount":1,
-            "sliceId":1,
-            "miner":{
-                "node":"",
-                "reward":"",
-                "address":"",
-                "bcuid":""
-            },
-            "nodes":"",
-            "avetx":"2000"
-       },
-       "body":{
-            "transactions":[
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-            ]
-       }
-    }
+    "blocks":[
+       {
+            "header":{
+                "parentHash":"1",
+                "txTrieRoot":"1",
+                "timestamp":1,
+                "blockNumber":1,
+                "extData":"1",
+                "nonce":"1",
+                "blockHash":"1",
+                "txHashs":["1","2"],
+                "txCount":1,
+                "sliceId":1,
+                "miner":{
+                    "node":"",
+                    "reward":"",
+                    "address":"",
+                    "bcuid":""
+                },
+                "nodes":"",
+                "avetx":"2000"
+            }
+       },...
+    ]
 }
 ----
 [block-get-detail]
@@ -1982,6 +936,11 @@ Content-Type: application/json
 - 描述
 
  用来根据块hash获取块详情
+
+- 引用
+
+ @see [block.proto] message ReqGetBlockByBlockHash
+ @see [block.proto] message ResGetBlockByBlockHash
 
 - 请求地址： /bok/pbgha.do
 [source,http,options="nowrap"]
@@ -2006,7 +965,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -2022,10 +981,6 @@ Content-Type: application/json
 |`String`
 |上一块的hash
 
-|`block.header.coinbase`
-|`String`
-|coinbase
-
 |`block.header.txTrieRoot`
 |`String`
 |交易的root
@@ -2034,11 +989,11 @@ Content-Type: application/json
 |`int`
 |时间戳
 
-|`block.header.height`
+|`block.header.blockNumber`
 |`int`
 |块的高度
 
-|`block.header.extraData`
+|`block.header.extData`
 |`String`
 |拓展信息
 
@@ -2090,112 +1045,19 @@ Content-Type: application/json
 |`String`
 |块内平均交易时间
 
-|`block.body`
-|`Object`
-|块body信息
-
-|`block.body.transactions`
-|`Array`
-|块交易信息
-
-|`block.body.transactions.status`
-|`String`
-|交易状态
-
-|`block.body.transactions.delegates`
-|`Array`
-|代理
-
-|`block.body.transactions.data`
-|`String`
-|数据
-
-|`block.body.transactions.txHash`
-|`String`
-|交易hash
-
-|`block.body.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`block.body.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`block.body.transactions.froms`
-|`Array`
-|发起者
-
-|`block.body.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`block.body.transactions.froms.fee`
-|`int`
-|手续费
-
-|`block.body.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`block.body.transactions.froms.address`
-|`String`
-|地址
-
-|`block.body.transactions.froms.amount`
-|`String`
-|数量
-
-|`block.body.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`block.body.transactions.froms.token`
-|`String`
-|token
-
-|`block.body.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`block.body.transactions.tos`
-|`Array`
-|接收者信息
-
-|`block.body.transactions.tos.address`
-|`String`
-|接收者地址
-
-|block.body.transactions.tos.amount`
-|`String`
-|数量
-
-|`block.body.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "totalCount":1,
     "block":{
        "header":{
             "parentHash":"1",
-            "coinbase":"1",
             "txTrieRoot":"1",
             "timestamp":1,
-            "height":1,
-            "extraData":"1",
+            "blockNumber":1,
+            "extData":"1",
             "nonce":"1",
             "blockHash":"1",
             "txHashs":["1","2"],
@@ -2209,304 +1071,6 @@ Content-Type: application/json
             },
             "nodes":"",
             "avetx":"2000"
-       },
-       "body":{
-            "transactions":[
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-            ]
-       }
-    }
-}
-----
-[block-get-detail]
-=== 根据块hash获取块详情
-- 描述
-
- 用来根据块hash获取块详情
-
-- 请求地址： /bok/pbgha.do
-[source,http,options="nowrap"]
-----
-POST /bok/pbgha.do HTTP/1.1
-Content-Type: application/json
-{
-    "blockHash":1
-}
-----
-
-- 请求参数说明
-|===
-|Path|Type|Description
-
-|`blockHash`
-|`int`
-|区块的hash
-
-|===
-- 返回参数说明
-|===
-|Path|Type|Description
-
-|`retCode`
-|`int`
-|响应码
-
-|`block`
-|`Object`
-|块信息
-
-|`block.header`
-|`Object`
-|块头信息
-
-|`block.header.parentHash`
-|`String`
-|上一块的hash
-
-|`block.header.coinbase`
-|`String`
-|coinbase
-
-|`block.header.txTrieRoot`
-|`String`
-|交易的root
-
-|`block.header.timestamp`
-|`int`
-|时间戳
-
-|`block.header.height`
-|`int`
-|块的高度
-
-|`block.header.extraData`
-|`String`
-|拓展信息
-
-|`block.header.nonce`
-|`String`
-|交易次数
-
-|`block.header.blockHash`
-|`String`
-|块的hash
-
-|`block.header.txHashs`
-|`Array`
-|交易hash
-
-|`block.header.txCount`
-|`int`
-|交易数
-
-|`block.header.sliceId`
-|`int`
-|数据分片id
-
-|`block.header.miner`
-|`Object`
-|矿工信息
-
-|`block.header.miner.node`
-|`String`
-|出块节点
-
-|`block.header.miner.reward`
-|`String`
-|出块奖励
-
-|`block.header.miner.address`
-|`String`
-|地址
-
-|`block.header.miner.bcuid`
-|`String`
-|出块的BCUID
-
-|`block.header.nodes`
-|`Array`
-|节点信息
-
-|`block.header.avetx`
-|`String`
-|块内平均交易时间
-
-|`block.body`
-|`Object`
-|块body信息
-
-|`block.body.transactions`
-|`Array`
-|块交易信息
-
-|`block.body.transactions.status`
-|`String`
-|交易状态
-
-|`block.body.transactions.delegates`
-|`Array`
-|代理
-
-|`block.body.transactions.data`
-|`String`
-|数据
-
-|`block.body.transactions.txHash`
-|`String`
-|交易hash
-
-|`block.body.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`block.body.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`block.body.transactions.froms`
-|`Array`
-|发起者
-
-|`block.body.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`block.body.transactions.froms.fee`
-|`int`
-|手续费
-
-|`block.body.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`block.body.transactions.froms.address`
-|`String`
-|地址
-
-|`block.body.transactions.froms.amount`
-|`String`
-|数量
-
-|`block.body.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`block.body.transactions.froms.token`
-|`String`
-|token
-
-|`block.body.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`block.body.transactions.tos`
-|`Array`
-|接收者信息
-
-|`block.body.transactions.tos.address`
-|`String`
-|接收者地址
-
-|block.body.transactions.tos.amount`
-|`String`
-|数量
-
-|`block.body.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
-|===
-- 返回参数示例
-----
-{
-    "retCode":"1",
-    "totalCount":1,
-    "block":{
-       "header":{
-            "parentHash":"1",
-            "coinbase":"1",
-            "txTrieRoot":"1",
-            "timestamp":1,
-            "height":1,
-            "extraData":"1",
-            "nonce":"1",
-            "blockHash":"1",
-            "txHashs":["1","2"],
-            "txCount":1,
-            "sliceId":1,
-            "miner":{
-                "node":"",
-                "reward":"",
-                "address":"",
-                "bcuid":""
-            },
-            "nodes":"",
-            "avetx":"2000"
-       },
-       "body":{
-            "transactions":[
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-            ]
        }
     }
 }
@@ -2517,13 +1081,18 @@ Content-Type: application/json
 
  用来根据块的高度获取块详情
 
+- 引用
+
+ @see [block.proto] message ReqGetTxByBlkHeight
+ @see [block.proto] message ResGetTxByBlkHeight
+
 - 请求地址： /bok/pbgbx.do
 [source,http,options="nowrap"]
 ----
 POST /bok/pbgbx.do HTTP/1.1
 Content-Type: application/json
 {
-    "blockHeight":1,
+    "blockNumber":1,
     "pageSize":10,
     "pageNo":1
 }
@@ -2533,7 +1102,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`blockHeight`
+|`blockNumber`
 |`int`
 |块的高度
 
@@ -2550,63 +1119,59 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
-|`transactions`
+|`txs`
 |`Array`
 |块交易信息
 
-|`transactions.status`
+|`txs.status`
 |`String`
 |交易状态
 
-|`transactions.txHash`
+|`txs.txHash`
 |`String`
 |交易hash
 
-|`transactions.blockHeight`
+|`txs.blockNumber`
 |`int`
 |块的高度
 
-|`transactions.timeStamp`
+|`txs.timeStamp`
 |`int`
 |时间戳
 
-|`transactions.froms`
+|`txs.froms`
 |`Array`
 |发起者
 
-|`transactions.froms.nonce`
+|`txs.froms.nonce`
 |`int`
 |交易次数
 
-|`transactions.froms.fee`
-|`int`
-|手续费
+|`txs.froms.tokenName`
+|`String`
+|token的名称
 
-|`transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`transactions.froms.address`
+|`txs.froms.address`
 |`String`
 |地址
 
-|`transactions.froms.amount`
+|`txs.froms.amount`
 |`String`
 |数量
 
-|`transactions.tos`
+|`txs.tos`
 |`Array`
 |接收者信息
 
-|`transactions.tos.address`
+|`txs.tos.address`
 |`String`
 |接收者地址
 
-|`transactions.amount`
+|`txs.amount`
 |`String`
 |数量
 
@@ -2618,21 +1183,20 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "totalCount":1,
-    "transactions":[
+    "txs":[
        "txHash":"2222",
-       "blockHeight":2555,
+       "blockNumber":2555,
        "timeStamp":1455555,
        "status":"1"
        "data":"",
        "froms":[
            {
                "nonce":1,
-               "fee":20,
-               "feeLimit":10,
                "address":"11111111",
                "amount":"20",
+               "tokenName":""
            },...
        ],
        "tos":[
@@ -2650,13 +1214,18 @@ Content-Type: application/json
 
  用来根据块的高度获取块详情
 
+- 引用
+
+ @see [block.proto] message ReqGetBlockByBlockHeight
+ @see [block.proto] message ResGetBlockByBlockHeight
+
 - 请求地址： /bok/pbghe.do
 [source,http,options="nowrap"]
 ----
 POST /bok/pbghe.do HTTP/1.1
 Content-Type: application/json
 {
-    "blockHeight":1,
+    "blockNumber":1,
     "pageSize":10,
     "pageNo":1
 }
@@ -2666,7 +1235,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`blockHeight`
+|`blockNumber`
 |`int`
 |块的高度
 
@@ -2683,7 +1252,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -2699,10 +1268,6 @@ Content-Type: application/json
 |`String`
 |上一块的hash
 
-|`block.header.coinbase`
-|`String`
-|coinbase
-
 |`block.header.txTrieRoot`
 |`String`
 |交易的root
@@ -2711,11 +1276,11 @@ Content-Type: application/json
 |`int`
 |时间戳
 
-|`block.header.height`
+|`block.header.blockNumber`
 |`int`
 |块的高度
 
-|`block.header.extraData`
+|`block.header.extData`
 |`String`
 |拓展信息
 
@@ -2767,112 +1332,19 @@ Content-Type: application/json
 |`String`
 |块内平均交易时间
 
-|`block.body`
-|`Object`
-|块body信息
-
-|`block.body.transactions`
-|`Array`
-|块交易信息
-
-|`block.body.transactions.status`
-|`String`
-|交易状态
-
-|`block.body.transactions.delegates`
-|`Array`
-|代理
-
-|`block.body.transactions.data`
-|`String`
-|数据
-
-|`block.body.transactions.txHash`
-|`String`
-|交易hash
-
-|`block.body.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`block.body.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`block.body.transactions.froms`
-|`Array`
-|发起者
-
-|`block.body.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`block.body.transactions.froms.fee`
-|`int`
-|手续费
-
-|`block.body.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`block.body.transactions.froms.address`
-|`String`
-|地址
-
-|`block.body.transactions.froms.amount`
-|`String`
-|数量
-
-|`block.body.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`block.body.transactions.froms.token`
-|`String`
-|token
-
-|`block.body.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`block.body.transactions.tos`
-|`Array`
-|接收者信息
-
-|`block.body.transactions.tos.address`
-|`String`
-|接收者地址
-
-|block.body.transactions.tos.amount`
-|`String`
-|数量
-
-|`block.body.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "totalCount":1,
     "block":{
        "header":{
             "parentHash":"1",
-            "coinbase":"1",
             "txTrieRoot":"1",
             "timestamp":1,
-            "height":1,
-            "extraData":"1",
+            "blockNumber":1,
+            "extData":"1",
             "nonce":"1",
             "blockHash":"1",
             "txHashs":["1","2"],
@@ -2886,37 +1358,6 @@ Content-Type: application/json
             },
             "nodes":"",
             "avetx":"2000"
-       },
-       "body":{
-            "transactions":[
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-            ]
        }
     }
 }
@@ -2926,6 +1367,11 @@ Content-Type: application/json
 - 描述
 
  用来根据交易hash获取块详情
+
+- 引用
+
+ @see [block.proto] message ReqGetBlockByTxHash
+ @see [block.proto] message ResGetBlockByTxHash
 
 - 请求地址： /bok/pbgth.do
 [source,http,options="nowrap"]
@@ -2950,7 +1396,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -2966,10 +1412,6 @@ Content-Type: application/json
 |`String`
 |上一块的hash
 
-|`block.header.coinbase`
-|`String`
-|coinbase
-
 |`block.header.txTrieRoot`
 |`String`
 |交易的root
@@ -2978,11 +1420,11 @@ Content-Type: application/json
 |`int`
 |时间戳
 
-|`block.header.height`
+|`block.header.blockNumber`
 |`int`
 |块的高度
 
-|`block.header.extraData`
+|`block.header.extData`
 |`String`
 |拓展信息
 
@@ -3034,112 +1476,19 @@ Content-Type: application/json
 |`String`
 |块内平均交易时间
 
-|`block.body`
-|`Object`
-|块body信息
-
-|`block.body.transactions`
-|`Array`
-|块交易信息
-
-|`block.body.transactions.status`
-|`String`
-|交易状态
-
-|`block.body.transactions.delegates`
-|`Array`
-|代理
-
-|`block.body.transactions.data`
-|`String`
-|数据
-
-|`block.body.transactions.txHash`
-|`String`
-|交易hash
-
-|`block.body.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`block.body.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`block.body.transactions.froms`
-|`Array`
-|发起者
-
-|`block.body.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`block.body.transactions.froms.fee`
-|`int`
-|手续费
-
-|`block.body.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`block.body.transactions.froms.address`
-|`String`
-|地址
-
-|`block.body.transactions.froms.amount`
-|`String`
-|数量
-
-|`block.body.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`block.body.transactions.froms.token`
-|`String`
-|token
-
-|`block.body.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`block.body.transactions.tos`
-|`Array`
-|接收者信息
-
-|`block.body.transactions.tos.address`
-|`String`
-|接收者地址
-
-|block.body.transactions.tos.amount`
-|`String`
-|数量
-
-|`block.body.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "totalCount":1,
     "block":{
        "header":{
             "parentHash":"1",
-            "coinbase":"1",
             "txTrieRoot":"1",
             "timestamp":1,
-            "height":1,
-            "extraData":"1",
+            "blockNumber":1,
+            "extData":"1",
             "nonce":"1",
             "blockHash":"1",
             "txHashs":["1","2"],
@@ -3153,37 +1502,6 @@ Content-Type: application/json
             },
             "nodes":"",
             "avetx":"2000"
-       },
-       "body":{
-            "transactions":[
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-            ]
        }
     }
 }
@@ -3193,6 +1511,11 @@ Content-Type: application/json
 - 描述
 
  用来获取创始块
+
+- 引用
+
+ @see [block.proto] message ReqGetGenisBlock
+ @see [block.proto] message RetGetGenisBlock
 
 - 请求地址： /bok/pbggb.do
 [source,http,options="nowrap"]
@@ -3207,7 +1530,7 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
@@ -3223,10 +1546,6 @@ Content-Type: application/json
 |`String`
 |上一块的hash
 
-|`block.header.coinbase`
-|`String`
-|coinbase
-
 |`block.header.txTrieRoot`
 |`String`
 |交易的root
@@ -3235,11 +1554,11 @@ Content-Type: application/json
 |`int`
 |时间戳
 
-|`block.header.height`
+|`block.header.blockNumber`
 |`int`
 |块的高度
 
-|`block.header.extraData`
+|`block.header.extData`
 |`String`
 |拓展信息
 
@@ -3291,112 +1610,19 @@ Content-Type: application/json
 |`String`
 |块内平均交易时间
 
-|`block.body`
-|`Object`
-|块body信息
-
-|`block.body.transactions`
-|`Array`
-|块交易信息
-
-|`block.body.transactions.status`
-|`String`
-|交易状态
-
-|`block.body.transactions.delegates`
-|`Array`
-|代理
-
-|`block.body.transactions.data`
-|`String`
-|数据
-
-|`block.body.transactions.txHash`
-|`String`
-|交易hash
-
-|`block.body.transactions.blockHeight`
-|`int`
-|块的高度
-
-|`block.body.transactions.timeStamp`
-|`int`
-|时间戳
-
-|`block.body.transactions.froms`
-|`Array`
-|发起者
-
-|`block.body.transactions.froms.nonce`
-|`int`
-|交易次数
-
-|`block.body.transactions.froms.fee`
-|`int`
-|手续费
-
-|`block.body.transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`block.body.transactions.froms.address`
-|`String`
-|地址
-
-|`block.body.transactions.froms.amount`
-|`String`
-|数量
-
-|`block.body.transactions.froms.pubKey`
-|`String`
-|公钥
-
-|`block.body.transactions.froms.token`
-|`String`
-|token
-
-|`block.body.transactions.froms.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`block.body.transactions.tos`
-|`Array`
-|接收者信息
-
-|`block.body.transactions.tos.address`
-|`String`
-|接收者地址
-
-|block.body.transactions.tos.amount`
-|`String`
-|数量
-
-|`block.body.transactions.tos.symbol`
-|`String`
-|币的简称
-
-|`block.body.transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
-
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "totalCount":1,
     "block":{
        "header":{
             "parentHash":"1",
-            "coinbase":"1",
             "txTrieRoot":"1",
             "timestamp":1,
-            "height":1,
-            "extraData":"1",
+            "blockNumber":1,
+            "extData":"1",
             "nonce":"1",
             "blockHash":"1",
             "txHashs":["1","2"],
@@ -3410,37 +1636,6 @@ Content-Type: application/json
             },
             "nodes":"",
             "avetx":"2000"
-       },
-       "body":{
-            "transactions":[
-               "txHash":"2222",
-               "blockHeight":2555,
-               "timeStamp":1455555,
-               "status":"1"
-               "delegates":["1","2"],
-               "data":"",
-               "froms":[
-                   {
-                       "nonce":1,
-                       "fee":20,
-                       "feeLimit":10,
-                       "address":"11111111",
-                       "amount":"20",
-                       "pubKey":"111111",
-                       "token":"ERC-20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ],
-               "tos":[
-                   {
-                       "address":"dsfjsdkfhsdjkf",
-                       "amount":"20",
-                       "symbol":"eth",
-                       "cryptoToken":"ddddd"
-                   },...
-               ]
-            ]
        }
     }
 }
@@ -3450,10 +1645,15 @@ Content-Type: application/json
 == 交易
 
 [block-get-detail]
-=== 获取所有区块的hash
+=== 获取所有区块的hash (废弃)
 - 描述
 
  用来获取所有区块的hash
+
+- 引用
+
+ @see [tx.proto] message ReqGetTxByTxHash
+ @see [tx.proto] message ResGetTxByTxHash
 
 - 请求地址： /trx/pbgbs.do
 [source,http,options="nowrap"]
@@ -3490,7 +1690,7 @@ Content-Type: application/json
 |`String`
 |上一个块的hash
 
-|`blocks.number`
+|`blocks.blockNumber`
 |`int`
 |块里面的交易数量
 
@@ -3518,12 +1718,12 @@ Content-Type: application/json
 - 返回参数示例
 ----
 {
-    "retCode":"1",
+    "ret":"1",
     "blocks":[
         {
             "blockHash":"",
             "parentHash":"",
-            "number":1,
+            "blockNumber":1,
             "state":"",
             "receipt":"",
             "txTrieRoot":"2345",
@@ -3539,6 +1739,11 @@ Content-Type: application/json
 - 描述
 
  用来根据交易hash获取交易详情
+
+- 引用
+
+ @see [tx.proto] message ReqGetTxByTxHash
+ @see [tx.proto] message ResGetTxByTxHash
 
 - 请求地址： /txs/pbgtt.do
 [source,http,options="nowrap"]
@@ -3563,109 +1768,88 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
-|`transaction`
+|`txs`
 |`Array`
 |交易信息
 
-|`transaction.status`
+|`txs.status`
 |`String`
 |交易状态
 
-|`transaction.delegates`
-|`Array`
-|代理
-
-|`transaction.data`
+|`txs.data`
 |`String`
 |数据
 
-|`transaction.txHash`
+|`txs.txHash`
 |`String`
 |交易hash
 
-|`transaction.blockHeight`
+|`txs.blockNumber`
 |`int`
 |块的高度
 
-|`transaction.timeStamp`
+|`txs.timeStamp`
 |`int`
 |时间戳
 
-|`transaction.froms`
+|`txs.froms`
 |`Array`
 |发起者
 
-|`transaction.froms.nonce`
+|`txs.froms.nonce`
 |`int`
 |交易次数
 
-|`transaction.froms.fee`
-|`int`
-|手续费
-
-|`transaction.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`transaction.froms.address`
+|`txs.froms.address`
 |`String`
 |地址
 
-|`transaction.froms.amount`
+|`txs.froms.amount`
 |`String`
 |数量
 
-|`transaction.froms.pubKey`
+|`txs.froms.pubKey`
 |`String`
 |公钥
 
-|`transaction.froms.token`
+|`txs.froms.tokenName`
 |`String`
 |token
 
-|`transaction.froms.symbol`
+|`txs.froms.symbol`
 |`String`
 |币的简称
 
-|`transaction.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`transaction.tos`
+|`txs.tos`
 |`Array`
 |接收者信息
 
-|`transaction.tos.address`
+|`txs.tos.address`
 |`String`
 |接收者地址
 
-|`transaction.tos.amount`
+|`txs.tos.amount`
 |`String`
 |数量
 
-|`transaction.tos.symbol`
+|`txs.tos.symbol`
 |`String`
 |币的简称
-
-|`transaction.tos.cryptoToken`
-|`String`
-|cryptoToken
 
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
-    "transaction":
+    "ret":"1",
+    "txs":
         {
             "txHash":"2222",
-            "blockHeight":2555,
+            "blockNumber":2555,
             "timeStamp":1455555,
             "status":"1"
-            "delegates":["1","2"],
             "data":"",
             "froms":[
                 {
@@ -3675,28 +1859,30 @@ Content-Type: application/json
                     "address":"11111111",
                     "amount":"20",
                     "pubKey":"111111",
-                    "token":"ERC-20",
-                    "symbol":"eth",
-                    "cryptoToken":"ddddd"
+                    "tokenName":"ERC-20",
+                    "symbol":"eth"
                 },...
             ],
             "tos":[
                 {
                     "address":"dsfjsdkfhsdjkf",
                     "amount":"20",
-                    "symbol":"eth",
-                    "cryptoToken":"ddddd"
+                    "symbol":"eth"
                 },...
             ]
          }
 }
 ----
-
 [block-get-detail]
 === 根据账户地址获取交易详情
 - 描述
 
  用来根据账户地址获取交易详情
+
+- 引用
+
+ @see [tx.proto] message ReqGetTxByAddress
+ @see [tx.proto] message ResGetTxByAddress
 
 - 请求地址： /txs/pbgta.do
 [source,http,options="nowrap"]
@@ -3732,129 +1918,104 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
-|`transactionss`
+|`txs`
 |`Array`
 |交易信息
 
-|`transactions.status`
+|`txs.status`
 |`String`
 |交易状态
 
-|`transactions.delegates`
-|`Array`
-|代理
-
-|`transactions.data`
+|`txs.data`
 |`String`
 |数据
 
-|`transactions.txHash`
+|`txs.txHash`
 |`String`
 |交易hash
 
-|`transactions.blockHeight`
+|`txs.blockNumber`
 |`int`
 |块的高度
 
-|`transactions.timeStamp`
+|`txs.timeStamp`
 |`int`
 |时间戳
 
-|`transactions.froms`
+|`txs.froms`
 |`Array`
 |发起者
 
-|`transactions.froms.nonce`
+|`txs.froms.nonce`
 |`int`
 |交易次数
 
-|`transactions.froms.fee`
-|`int`
-|手续费
-
-|`transactions.froms.feeLimit`
-|`int`
-|手续费限制
-
-|`transactions.froms.address`
+|`txs.froms.address`
 |`String`
 |地址
 
-|`transactions.froms.amount`
+|`txs.froms.amount`
 |`String`
 |数量
 
-|`transactions.froms.pubKey`
+|`txs.froms.pubKey`
 |`String`
 |公钥
 
-|`transactions.froms.token`
+|`txs.froms.tokenName`
 |`String`
 |token
 
-|`transactions.froms.symbol`
+|`txs.froms.symbol`
 |`String`
 |币的简称
 
-|`transactions.froms.cryptoToken`
-|`String`
-|cryptoToken
-
-|`transactions.tos`
+|`txs.tos`
 |`Array`
 |接收者信息
 
-|`transactions.tos.address`
+|`txs.tos.address`
 |`String`
 |接收者地址
 
-|`transactions.tos.amount`
+|`txs.tos.amount`
 |`String`
 |数量
 
-|`transactions.tos.symbol`
+|`txs.tos.symbol`
 |`String`
 |币的简称
-
-|`transactions.tos.cryptoToken`
-|`String`
-|cryptoToken
 
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
-    "transactions":[
+    "ret":"1",
+    "txs":[
         {
             "txHash":"2222",
-            "blockHeight":2555,
+            "blockNumber":2555,
             "timeStamp":1455555,
             "status":"1"
-            "delegates":["1","2"],
             "data":"",
             "froms":[
                 {
                     "nonce":1,
-                    "fee":20,
-                    "feeLimit":10,
                     "address":"11111111",
                     "amount":"20",
                     "pubKey":"111111",
-                    "token":"ERC-20",
-                    "symbol":"eth",
-                    "cryptoToken":"ddddd"
+                    "tokenName":"ERC-20",
+                    "symbol":"eth"
                 },...
             ],
             "tos":[
                 {
                     "address":"dsfjsdkfhsdjkf",
                     "amount":"20",
-                    "symbol":"eth",
-                    "cryptoToken":"ddddd"
+                    "symbol":"eth"
                 },...
             ]
         },...
@@ -3867,6 +2028,11 @@ Content-Type: application/json
 - 描述
 
  用来使用分页获取交易列表
+
+- 引用
+
+ @see [tx.proto] message ReqGetTxList
+ @see [tx.proto] message ResGetTxList
 
 - 请求地址： /txs/pbtxl.do
 [source,http,options="nowrap"]
@@ -3896,49 +2062,47 @@ Content-Type: application/json
 |===
 |Path|Type|Description
 
-|`retCode`
+|`ret`
 |`int`
 |响应码
 
-|`transactions`
+|`txs`
 |`Array`
 |交易信息
 
-|`transactions.status`
+|`txs.status`
 |`String`
 |交易状态
 
-|`transactions.txHash`
+|`txs.txHash`
 |`String`
 |交易hash
 
-|`transactions.blockHeight`
+|`txs.blockNumber`
 |`int`
 |块的高度
 
-|`transactions.timeStamp`
+|`txs.timeStamp`
 |`int`
 |时间戳
 
-|`transactions.totalCount`
-|`String`
-|交易总额
+|`totalCount`
+|`int`
+|总条数
 
 |===
 - 返回参数示例
 ----
 {
-    "retCode":"1",
-    "transactions":[
+    "ret":"1",
+    "totalCount":1
+    "txs":[
         {
             "txHash":"2222",
-            "blockHeight":2555,
+            "blockNumber":2555,
             "timeStamp":1455555,
-            "status":"1",
-            "totalCount":"2000"
+            "status":"1"
         },...
 	]
 }
 ----
-
-

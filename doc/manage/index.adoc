@@ -1,0 +1,1252 @@
+= 节点管理器
+Lance;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 5
+:sectlinks:
+Doc Writer <fjy170@zcsmart.com>
+
+[[overview]]
+== 概要
+   梳理节点管理器相关操作：
+   . 梳理节点管理器的管理操作流程
+   . 梳理节点管理器的合约操作流程
+
+[stage]
+== 节点
+
+[stage-query]
+=== 获取节点信息
+- 描述
+
+ 用来查询节点信息
+
+- 引用
+
+  @see [node.proto] message ReqGetNodeInfo
+  @see [node.proto] message RespGetNodeInfo
+
+- 请求地址： /bnm/pbgni.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbgni.do HTTP/1.1
+Content-Type: application/json
+----
+
+- 请求参数说明
+ 无
+
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`raftNodeInfo`
+|`Object`
+|节点信息
+
+|`raftNodeInfo.name`
+|`String`
+|节点名称
+
+|`raftNodeInfo.dposInfo`
+|`Object`
+|dpos信息
+
+|`raftNodeInfo.dposInfo.name`
+|`String`
+|dops节点名称
+
+|`raftNodeInfo.dposInfo.bcuid`
+|`String`
+|dpos blockChainUid
+
+|`raftNodeInfo.dposInfo.nodeIdIndex`
+|`int`
+|dpos节点的索引
+
+|`raftNodeInfo.dposInfo.startUpTime`
+|`int`
+|dpos节点的启动时间
+
+|`raftNodeInfo.dposInfo.uri`
+|`String`
+|dpos的uri
+
+|`raftNodeInfo.dposInfo.address`
+|`String`
+|dpos的账户地址
+
+|`raftNodeInfo.bcuid`
+|`String`
+|blockChainUid
+
+|`raftNodeInfo.nodeIdIndex`
+|`int`
+|节点index
+
+|`raftNodeInfo.startUpTime`
+|`int`
+|节点启动时间
+
+|`raftNodeInfo.uri`
+|`String`
+|节点uri
+
+|`raft.address`
+|`String`
+|节点账户的地址
+
+|`coinTotal`
+|`String`
+|矿的总数
+
+|`serverType`
+|`String`
+|服务器类型
+
+|`serverTime`
+|`String`
+|服务器时间
+
+|`osName`
+|`String`
+|操作系统名称
+
+|`osVersion`
+|`String`
+|操作系统版本
+
+|`osTimeZone`
+|`String`
+|操作系统时区
+
+|`address`
+|`String`
+|当前节点的账户地址
+
+|`network`
+|`Object`
+|网络信息
+
+|`network.name`
+|`String`
+|当前连接的节点
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "raftInfo":{
+        "name":"测试节点",
+        "bcuid":"22",
+        "nodeIdx":1,
+        "startUpTime":145258712,
+        "uri":"/xxx/xxx",
+        "address":"xxxxx"
+    },
+    "dposInfo":{
+        "name":"测试节点",
+        "bcuid":"22",
+        "nodeIdx":1,
+        "startUpTime":145258712,
+        "uri":"/xxx/xxx",
+        "address":"xxxxx"
+    },
+    "coinTotal":"5",
+    "serverType":"1",
+    "serverTime":"2018-12-03 12:08",
+    "osName":"windows",
+    "osVersion":"12.3",
+    "osTimeZone":"GT8",
+    "address":"xxx",
+    "network":{
+        "name":"https://"
+    },
+    "ret":"1",
+    "retMsg":"成功"
+
+}
+----
+[admin]
+== 管理员
+
+[admin-query]
+=== 判断管理员是否需要设置登录密码
+- 描述
+
+ 用来判断管理员是否需要进行设置登录密码
+
+- 引用
+
+  @see [manageimpl.proto] message ReqCheckIsFirstOpen
+  @see [manageimpl.proto] message RespCheckIsFirstOpen
+
+- 请求地址： /bnm/pbcia.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbcia.do HTTP/1.1
+Content-Type: application/json
+----
+
+- 请求参数说明
+ 无
+
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|响应码 1需要进行设置，-1 不需要
+
+|`retMsg`
+|`String`
+|提示信息
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"成功"
+
+}
+----
+[admin-setUp]
+=== 设置管理员登录密码
+- 描述
+
+ 用来设置管理员登录密码
+
+- 引用
+
+  @see [manageimpl.proto] message ReqRegister
+  @see [manageimpl.proto] message RespRegister
+
+- 请求地址： /bnm/pbraa.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbraa.do HTTP/1.1
+Content-Type: application/json
+{
+    "pwd":"123456"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`pwd`
+|`String`
+|密码
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`token`
+|`String`
+|设置以后的凭证
+
+|`ret`
+|`String`
+|响应码 1需要进行设置，-1 不需要
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "token":"12345697",
+    "ret":"1",
+    "retMsg":"成功"
+
+}
+----
+
+[admin-login]
+=== 管理员登录
+- 描述
+
+ 用来设置管理员登录密码
+
+- 引用
+
+  @see [manageimpl.proto] message ReqLogin
+  @see [manageimpl.proto] message RespLogin
+
+- 请求地址： /bnm/pblgi.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pblgi.do HTTP/1.1
+Content-Type: application/json
+{
+    "pwd":"123456"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`pwd`
+|`String`
+|密码
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`token`
+|`String`
+|设置以后的凭证
+
+|`ret`
+|`String`
+|响应码 1需要进行设置，-1 不需要
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "token":"12345697",
+    "ret":"1",
+    "retMsg":"成功"
+
+}
+----
+[config]
+== 配置
+
+[config-batch]
+=== 批量读取配置信息（废弃）
+- 描述
+
+ 用来读取一些配置信息展示给用户查看
+
+- 引用
+
+  @see [] message
+  @see [] message
+
+- 请求地址： /bnm/pbbqc.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbbqc.do HTTP/1.1
+Content-Type: application/json
+{
+    "keys":["key1","key2"]
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`keys`
+|`Array`
+|配置的key
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`values`
+|`Array`
+|key对应的value
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "values":["value1","value2"],
+    "ret":"1",
+    "retMsg":"成功"
+
+}
+----
+
+
+[config-batch-set]
+=== 批量设置配置信息
+- 描述
+
+ 用来批量设置一些值到系统中
+
+- 引用
+
+  @see [manageimpl.proto] message ReqBatchSetConfig
+  @see [manageimpl.proto] message RespBatchSetConfig
+
+- 请求地址： /bnm/pbbsc.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbbsc.do HTTP/1.1
+Content-Type: application/json
+{
+    "keys":["key1","key2"],
+    "values":["value1","value2"]
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`keys`
+|`Array`
+|配置的key
+
+|`values`
+|`Array`
+|配置的值
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+
+[config-chain-net]
+=== 设置chain net
+- 描述
+
+ 用来设置chain-net
+
+- 引用
+
+  @see [manageimpl.proto] message ReqSetNetwork
+  @see [manageimpl.proto] message RespSetNetwork
+
+- 请求地址： /bnm/pbsnw.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbsnw.do HTTP/1.1
+Content-Type: application/json
+{
+    "networkUrl":"https://xxxxx/xxx"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`network`
+|`String`
+|network
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+
+[config-chain-get]
+=== 获取chain net
+- 描述
+
+ 用来读取chain-net
+
+- 引用
+
+  @see [manageimpl.proto] message ReqGetNetwork
+  @see [manageimpl.proto] message RespGetNetwork
+
+- 请求地址： /bnm/pbgnw.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbgnw.do HTTP/1.1
+Content-Type: application/json
+----
+
+- 请求参数说明
+无
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`networkUrl`
+|`String`
+|获取的networkUrl
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "networkUrl":"222",
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+[node-account]
+== node账户
+[node-account-create]
+=== 创建node账户
+- 描述
+
+ 用来创建一个node账户
+
+- 引用
+
+  @see [manageimpl.proto] message ReqCreateNewAccount
+  @see [manageimpl.proto] message RespCreateNewAccount
+
+- 请求地址： /bnm/pbcna.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbcna.do HTTP/1.1
+Content-Type: application/json
+{
+    "pwd":"123456"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`pwd`
+|`String`
+|设置的密码
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+
+[node-account-get]
+=== 获取node账户
+- 描述
+
+ 用来获取node账户的信息
+
+- 引用
+
+  @see [manageimpl.proto] message ReqGetNodeAccount
+  @see [manageimpl.proto] message RespGetNodeAccount
+
+- 请求地址： /bnm/pbgna.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbgna.do HTTP/1.1
+Content-Type: application/json
+----
+
+- 请求参数说明
+无
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`accountAddress`
+|`String`
+|账户地址
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "accountAddress":"sfhs",
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+
+[node-account-set]
+=== 设置node账户
+- 描述
+
+ 用来设置node账户的信息
+
+- 引用
+
+  @see [manageimpl.proto] message ReqSetNodeAccount
+  @see [manageimpl.proto] message RespSetNodeAccount
+
+- 请求地址： /bnm/pbsna.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbsna.do HTTP/1.1
+Content-Type: application/json
+{
+    "keyStoreJsonStr":"fsfsdfhdsfjh",
+    "pwd":"123456"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`keyStoreJsonStr`
+|`String`
+|key store的字符串信息
+
+|`pwd`
+|`String`
+|账户的密码
+
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+
+[node-account-export]
+=== 导出node账户
+- 描述
+
+ 用来导出node账户的信息
+
+- 引用
+
+  @see [manageimpl.proto] message ReqExportNodeAccount
+  @see [manageimpl.proto] message RespExportNodeAccount
+
+- 请求地址： /bnm/pbena.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbena.do HTTP/1.1
+Content-Type: application/json
+{
+    "pwd":"123456"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`pwd`
+|`String`
+|账户的密码
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`keyStoreJsonStr`
+|`String`
+|keyStore的字符串
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "keyStoreJsonStr":"5548",
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+
+[node-account-setBypri]
+=== 根据私钥设置node账户
+- 描述
+
+ 用来根据私钥设置node账户的信息
+
+- 引用
+
+  @see [manageimpl.proto] message ReqSetNodeAccountByPriv
+  @see [manageimpl.proto] message RespSetNodeAccount
+
+- 请求地址： /bnm/pbsnp.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbsnp.do HTTP/1.1
+Content-Type: application/json
+{
+    "pwd":"123456",
+    "priKey":"fhsdkfdsh"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`pwd`
+|`String`
+|账户的密码
+
+|`priKey`
+|`String`
+|账户的私钥信息
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+[tx-smart-contract]
+== 合约和交易
+[send-cws-tx]
+=== 发送锁定cws交易
+- 描述
+
+ 用来发送锁定cws交易
+
+- 引用
+
+  @see [manageimpl.proto] message ReqSendLockCWS
+  @see [manageimpl.proto] message RespDoTxResult
+
+- 请求地址： /bnm/pbslc.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbslc.do HTTP/1.1
+Content-Type: application/json
+{
+    "pwd":"123456",
+    "amount":"1"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`pwd`
+|`String`
+|账户的密码
+
+|`amount`
+|`String`
+|金额 单位wei
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`txHash`
+|`String`
+|交易的hash
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "txHash":"dhsdufhdsf",
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+[create-contract]
+=== 创建合约
+- 描述
+
+ 用来创建合约
+
+- 引用
+
+  @see [manageimpl.proto] message ReqCreateContract
+  @see [manageimpl.proto] message RespCreateContract
+
+- 请求地址： /bnm/pbcct.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbcct.do HTTP/1.1
+Content-Type: application/json
+{
+    "pwd":"123456",
+    "contractCode":"{sfsfsf}"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`pwd`
+|`String`
+|账户的密码
+
+|`contractCode`
+|`String`
+|智能合约代码
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`contractHash`
+|`String`
+|智能合约hash
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "contractHash":"dhsdufhdsf",
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+[get-contract]
+=== 获取合约列表
+- 描述
+
+ 用来获取合约列表
+
+- 引用
+
+  @see [manageimpl.proto] message ReqGetContractList
+  @see [manageimpl.proto] message RespGetContractList
+
+- 请求地址： /bnm/pbglc.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbglc.do HTTP/1.1
+Content-Type: application/json
+----
+
+- 请求参数说明
+    无
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`contracts`
+|`Array`
+|所有的智能合约
+
+|`contracts.hash`
+|`String`
+|智能合约的hash
+
+|`contracts.codeHash`
+|`String`
+|码hash
+
+|`contracts.code`
+|`String`
+|code
+
+|`contracts.data`
+|`String`
+|data
+
+|`contracts.timestamp`
+|`int`
+|时间戳
+
+|`ret`
+|`String`
+|响应码
+
+|`retMsg`
+|`String`
+|提示
+
+|===
+- 返回参数示例
+----
+{
+    "contracts":{
+        "hash":"adasd",
+        "codeHash":"dsds",
+        "code":"123456",
+        "data":"dsdasd",
+        "timestamp":1425552
+    },
+    "ret":"1",
+    "retMsg":"成功"
+}
+----
+
+[node-get-tx]
+=== 获取节点交易信息
+- 描述
+
+ 用来获取节点交易信息，未发送的，未打包的
+
+- 引用
+
+  @see [manageimpl.proto] message ReqGetNodeTransactionInfo
+  @see [manageimpl.proto] message RespGetNodeTransactionInfo
+
+- 请求地址： /bnm/pbgnt.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbgnt.do HTTP/1.1
+Content-Type: application/json
+----
+
+- 请求参数说明
+    无
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`waitSendCount`
+|`String`
+|等待发送的
+
+|`waitBlockCount`
+|`String`
+|等待打块的
+
+|===
+- 返回参数示例
+----
+{
+    "waitSendCount":"1",
+    "waitBlockCount":"2"
+}
+----
+
+[token-create]
+=== 创建Token
+- 描述
+
+ 用来创建Token
+
+- 引用
+
+  @see [manageimpl.proto] message ReqCreateToken
+  @see [manageimpl.proto] message RespCreateToken
+
+- 请求地址： /bnm/pbctt.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbctt.do HTTP/1.1
+Content-Type: application/json
+{
+    "token":"23213",
+    "pwd":"123466",
+    "total":"500000"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`token`
+|`String`
+|token值
+
+|`pwd`
+|`String`
+|密码
+
+|`total`
+|`String`
+|token总数
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|接口返回码
+
+|`retMsg`
+|`String`
+|接口返回信息
+
+|`txHash`
+|`String`
+|交易的hash
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"2",
+    "txHash":"wewewq"
+}
+----
+
+[token-query]
+=== 查询Token
+- 描述
+
+ 用来查询发布以后的Token
+
+- 引用
+
+  @see [manageimpl.proto] message ReqQueryToken
+  @see [manageimpl.proto] message RespQueryToken
+
+- 请求地址： /bnm/pbgtt.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbgtt.do HTTP/1.1
+Content-Type: application/json
+{
+    "token":"123213",
+    "address":"21323"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`token`
+|`String`
+|token值  非必填，空的情况下只获取当前账户下erc20的token信息
+
+|`address`
+|`String`
+|地址
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|接口返回码
+
+|`retMsg`
+|`String`
+|接口返回信息
+
+|`tokens`
+|`Array`
+|token信息
+
+|`tokens.token`
+|`String`
+|token值
+
+|`tokens.total`
+|`String`
+|token的总数
+
+|`tokens.timestamp`
+|`String`
+|token的时间戳
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"2",
+    "tokens":[
+        {
+            "token":"123",
+            "total":"50000",
+            "timestamp":"14523685"
+        },...
+    ]
+}
+----
+
+[pwd-update]
+=== 修改管理员登录密码
+- 描述
+
+ 用来修改管理员登录密码
+
+- 引用
+
+  @see [manageimpl.proto] message ReqChangePassword
+  @see [manageimpl.proto] message RespChangePassword
+
+- 请求地址： /bnm/pbcpw.do
+[source,http,options="nowrap"]
+----
+POST /bnm/pbcpw.do HTTP/1.1
+Content-Type: application/json
+{
+    "old":"123213",
+    "new":"21323"
+}
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`old`
+|`String`
+|老的密码
+
+|`new`
+|`String`
+|新的密码
+
+|===
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`ret`
+|`String`
+|接口返回码
+
+|`retMsg`
+|`String`
+|接口返回信息
+
+|===
+- 返回参数示例
+----
+{
+    "ret":"1",
+    "retMsg":"2"
+}
+----

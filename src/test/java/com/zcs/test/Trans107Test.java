@@ -14,12 +14,12 @@ import java.util.Map;
 
 @SpringBootTest
 @Slf4j
-public class TransTest extends AbstractTestNGSpringContextTests {
-    String toAddress = "d9a52c40856b51533dd1ced6b08f701cf3abba62";
+public class Trans107Test extends AbstractTestNGSpringContextTests {
+    String toAddress = "c0ba9abcc9f943ce4e291c6530477e57637681f0";
     String mainAddress = "e0c7d2a75ccd61af87aaa818cdcb2246706363a1";
     String txHash = "";
-    String amount = "10000";//单位（个）
-    String url = "http://172.18.92.101:38000";
+    String amount = "100";//单位（个）
+    String url = "http://172.18.92.107:38000";
     @Test
     public void trans() throws InterruptedException {
         Map<String,String> readyMap = new HashMap<>();
