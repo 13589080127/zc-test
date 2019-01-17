@@ -1,1 +1,2 @@
-include::manage/index.adoc[]
+//热钱包
+include::broserapi/index.adoc[]

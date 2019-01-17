@@ -1,0 +1,13 @@
+@startuml
+title:查询钱包地址
+autonumber
+client->server:查询钱包地址信息
+note left:地址和分页参数
+server->server:收到地址和分页参数
+server->server:在数据库中查询得到 查询地址信息的url
+server->server:获取每一个节点信息url
+server->server:循环发送http请求查询钱包地址的信息
+server->server:请求成功，且有响应报文就终止循环
+server->server:对返回结果进行处理，得到账户余额\n交易次数\nerc20token信息\nERC721token信息
+server-->client:返回钱包地址详细信息
+@enduml

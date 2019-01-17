@@ -1,0 +1,61 @@
+=== 用户退出登录
+
+- 描述
+
+ 用来在钱包中用户退出登录
+
+
+- 引用
+
+
+////
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqDoContractTransaction
+- 返回：RespCreateTransaction
+====
+////
+
+
+
+
+- 请求地址：
+```
+/wlt/pbuol.do
+```
+
+[source,http,options="nowrap"]
+----
+POST /wlt/pbuol.do HTTP/1.1
+Content-Type: application/json
+{
+} 
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description|required
+|===
+
+- 返回参数示例
+----
+{
+  "rpl_code": 1,
+  "rpl_msg": ""
+}
+----
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+|`rpl_msg`
+|`String`
+|返回信息
+
+|===
+

@@ -1,0 +1,41 @@
+:toc: left
+:toclevels: 5
+:doctype: book
+
+= 用户相关
+用于对用户的一些操作
+[NOTE]
+====
+- 请求：所有接口请求时需要在http header里面添加X-APP-AUTH，登录后添加GRANT-TOKEN
+|====
+|Path|Type|Description
+
+|`appId`
+|`String`
+|app应用唯一id
+
+|`busi`
+|`String`
+|业务id
+
+|====
+
+----
+X-APP-AUTH{
+	"appId":"10000089",
+	"busi":"zctest"
+}
+GRANT-TOKEN:"xxxxxxxxxxx"
+----
+====
+
+include::register.adoc[]
+include::queryUserExist.adoc[]
+include::sendMsg.adoc[]
+include::verifySms.adoc[]
+include::resetPassword.adoc[]
+include::updateLoginPassword.adoc[]
+include::userLogin.adoc[]
+include::userOutLogin.adoc[]
+include::userQueryWltData.adoc[]
+include::uploadWalletData.adoc[]

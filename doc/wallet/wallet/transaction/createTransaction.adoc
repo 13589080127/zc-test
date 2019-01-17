@@ -1,0 +1,414 @@
+=== 发起交易
+
+- 流程
+
+[plantuml, format="png", id="pbgea"]
+----
+!define send(a,b,c) a[#55ff55]->b: c
+!define self(a, c) a[#ff2233]->a: c
+!define resp(a,b,c) a<-[#green]-b: c
+
+autonumber "<b>[00]"
+
+title
+发起交易
+end title
+
+send(Client, Server, 交易加密参数，交易币类型)
+self(Server, busi查询钱包参数)
+self(Server, 开始交易)
+resp(Client,Server,返回交易结果)
+
+----
+
+
+[plantuml, format="png", id="pbgea"]
+----
+title
+创建交易流程
+end title
+
+start
+
+if (参数和Busi都不为空?) then (yes)
+  :查询busi参数;
+  :入参MultiTransactionImpl;
+  partition 校验TxBody、Inputs {
+    :检查交易体;
+    :检查付款方是否存在;
+  }
+  while(MultiTransactionImpl Has Next)
+    partition 组装Out交易【付款】{
+      :检查交易体;
+      :付款方地址不能为空;
+      :付款金额不能为空;
+      :组装交易：
+      付款方金额，付款地址
+      ERC20，ERC721;
+    }
+  endwhile
+  if(收款方不为空) then (yes)
+  partition 组装收款数据 {
+      :检查交易体;
+      :收款地址是否不为空;
+      :组装交易
+      ERC20，ERC721;
+    }
+  else(no)
+    :创建房产？;
+  endif
+
+if(reqBodyImpl.getData不为空) then(yes)
+  :data内为合约内容，当前交易为创建合约
+  保存合约代码;
+else(no)
+
+endif
+if(reqBodyImpl.getExdata不为空) then(yes)
+  :ERC721上链数据;
+else(no)
+
+endif
+:addDelegate（此操作暂时无用）;
+:签名;
+:组装交易体MultiTransactionImpl，开始发起交易;
+partition CREATE_TRANSACTION{
+:OJpaDAO<CWVWltParameter> 查询参数;
+:签名数据，交易体;
+if(查询交易参数)then(yes)
+  if(交易参数getBody不为空)then(yes)
+    :发起交易请求;
+    if(交易参数查询成功)then(YES)
+      :获取交易TxHash;
+    else(NO)
+      :组装错误码;
+    endif
+  else(no)
+  endif
+else(交易参数getBody为空)
+  while(存在下一个节点)
+  partition 重新交易{
+    :更换节点发起交易请求;
+    if(交易参数查询成功)then(YES)
+      :获取交易TxHash;
+      :跳出循环;
+    else(NO)
+
+    endif
+  }
+  endwhile
+
+endif
+}
+else (no)
+  :参数异常;
+endif
+
+stop
+
+----
+
+- 引用
+
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqCreateMultiTransaction
+- 返回：RespCreateTransaction
+====
+
+
+
+- 请求地址：
+
+```
+/wlt/pbtcc.do // 调用合约
+/wlt/pbtbc.do // 创建合约
+/wlt/pbtbr.do // 创建ERC721
+/wlt/pbtbt.do // 创建ERC20
+/wlt/pbtrt.do // ERC720交易
+/wlt/pbttt.do // ERC20交易
+/wlt/pbtxd.do // 默认交易
+```
+
+[source,http,options="nowrap"]
+----
+POST /wlt/pbtxc.do HTTP/1.1
+Content-Type: application/json
+{
+  "transaction": {
+    "txHash": "",
+    "txBody": {
+      "inputs": [
+        {
+          "nonce": 0,
+          "fee": 0,
+          "feeLimit": 0,
+          "address": "",
+          "amount": "",
+          "token": "",
+          "symbol": "",
+          "cryptoToken": ""
+        },
+        {}
+      ],
+      "outputs": [
+        {
+          "address": "",
+          "amount": "",
+          "symbol": "",
+          "cryptoToken": ""
+        },
+        {}
+      ],
+      "exdata": "",
+      "signatures": [
+        {
+          "signature": ""
+        },
+        {}
+      ],
+      "delegate": [
+        "",
+        "2"
+      ],
+      "data": "",
+      "timestamp": 32168498321,
+      "type": 1,
+      "cryptoTokenData":{
+        "total:250
+        "symbol:""
+        "extData:[1,2,3,4]
+        "name:["",""]
+        "code:["",""]
+      }
+    },
+    "node": {
+      "node": "",
+      "ip": "",
+      "bcuid": ""
+    },
+    "status": "",
+    "result": ""
+  }
+}
+----
+
+
+- 请求参数说明
+|====
+|Path|Type|Description|Essential
+
+|`transaction`
+|`Object`
+|交易信息
+|必需
+
+|`transaction.txHash`
+|`String`
+|交易hash
+|必需
+
+|`transaction.txBody`
+|`Object`
+|交易内容体
+|
+
+|`transaction.txBody.inputs`
+|`Array`
+|发起方
+|
+
+|`transaction.txBody.inputs.nonce`
+|`int`
+|交易次数
+|
+
+|`transaction.txBody.inputs.fee`
+|`int`
+|手续费
+|
+
+|`transaction.txBody.inputs.feeLimit`
+|`int`
+|手续费限制
+|
+
+|`transaction.txBody.inputs.address`
+|`String`
+|发起方地址
+|
+
+|`transaction.txBody.inputs.amount`
+|`String`
+|交易金额
+|
+
+|`transaction.txBody.inputs.token`
+|`String`
+|ERC20 token名字
+|
+
+|`transaction.txBody.inputs.symbol`
+|`String`
+|ERC721 token标记
+|
+
+|`transaction.txBody.inputs.cryptoToken`
+|`String`
+|ERC721 token名字
+|
+
+|`transaction.txBody.outputs`
+|`Array`
+|接收方
+|
+
+|`transaction.txBody.outputs.address`
+|`String`
+|接收方地址
+|
+
+|`transaction.txBody.outputs.amount`
+|`String`
+|交易金额
+|
+
+|`transaction.txBody.outputs.symbol`
+|`String`
+|ERC721 token 标记
+|
+
+|`transaction.txBody.outputs.cryptoToken`
+|`String`
+|ERC721 token名字
+|
+
+|`transaction.txBody.exdata`
+|`String`
+|附属信息
+|
+
+|`transaction.txBody.signatures`
+|`Array`
+|签名信息
+|
+
+|`transaction.txBody.signatures.signature`
+|`String`
+|签名值
+|
+
+|`transaction.txBody.delegate`
+|`Array`
+|代理
+|
+
+|`transaction.txBody.data`
+|`String`
+|合约数据
+|
+
+|`transaction.txBody.timestamp`
+|`int`
+|时间戳
+|
+
+|`transaction.txBody.type`
+|`int`
+|交易类型
+|
+
+|`transaction.txBody.cryptoTokenData`
+|`Object`
+|ERC721 Token 信息
+|
+
+|`transaction.txBody.cryptoTokenData.total`
+|`int`
+|ERC721 Token 总量
+|
+
+|`transaction.txBody.cryptoTokenData.symbol`
+|`String`
+|ERC721 Token 名称
+|
+
+|`transaction.txBody.cryptoTokenData.extData`
+|`byte Array`
+|ERC721 Token 扩展信息
+|
+
+|`transaction.txBody.cryptoTokenData.name`
+|`String Array`
+|ERC721 Token 单个name
+|
+
+|`transaction.txBody.cryptoTokenData.code`
+|`String Array`
+|ERC721 Token 单个的ID
+|
+
+|`transaction.node`
+|`Object`
+|交易节点
+
+|`transaction.node.node`
+|`String`
+|节点名称
+|
+
+|`transaction.node.ip`
+|`String`
+|节点IP
+|
+
+|`transaction.node.bcuid`
+|`String`
+|节点唯一标识
+|
+
+|`transaction.status`
+|`String`
+|交易状态
+|
+
+|`transaction.result`
+|`String`
+|合约结果
+|
+
+|====
+
+- 返回参数示例
+----
+{
+    "rpl_code":1,
+    "rpl_msg":"",
+    "txHash":"",
+    "contractHash":""
+}
+----
+
+
+- 返回参数说明
+|====
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+|`txHash`
+|`String`
+|交易hash
+
+|`contractHash`
+|`String`
+|合约的地址
+
+|`rpl_msg`
+|`String`
+|返回信息
+
+|====

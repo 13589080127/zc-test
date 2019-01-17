@@ -1,0 +1,99 @@
+=== 创建钱包币种账户
+
+
+- 流程
+
+[plantuml, format="png", id="pbgea"]
+----
+!define send(a,b,c) a[#55ff55]->b: c
+!define self(a, c) a[#ff2233]->a: c
+!define resp(a,b,c) a<-[#green]-b: c
+
+autonumber "<b>[00]"
+
+title
+创建Node管理账户
+end title
+
+send(Client, Server, 加密数据，平台代号如：cwv，csc)
+self(Server,根据busi找到解密参数？？？)
+self(Server,解密数据（GBK JSON）)
+self(Server,合并之前的Keystore JSON)
+self(Server, 生成地址并入库)
+resp(Client,Server,成功则返回地址)
+
+----
+
+- 引用
+
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqNewAddress
+- 返回：RetNewAddress
+====
+
+
+- 请求地址
+
+```
+/wlt/pbcna.do
+```
+
+
+
+[source,http,options="nowrap"]
+----
+POST /wlt/pbcna.do HTTP/1.1
+Content-Type: application/json
+{
+  "data":"加密的\{\"seed\":\"地址助记词\"}"
+  "busi":"csc"
+}
+
+----
+- 请求参数说明
+|====
+|Path|Type|Description|Essential
+
+|`data`
+|`String`
+|seed加密JSON
+|必传
+
+|`busi`
+|`String`
+|平台参数
+|必传
+
+|====
+
+- 返回参数示例
+----
+{
+  "rpl_code": 1,
+  "rpl_msg": "",
+  "addr": ""
+}
+----
+
+- 返回参数说明
+|====
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+
+|`rpl_msg`
+|`String`
+|返回信息
+
+
+|`addr`
+|`String`
+|返回地址
+
+|====
+

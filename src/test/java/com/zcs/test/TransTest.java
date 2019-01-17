@@ -15,13 +15,13 @@ import java.util.Map;
 @SpringBootTest
 @Slf4j
 public class TransTest extends AbstractTestNGSpringContextTests {
-    String toAddress = "d9a52c40856b51533dd1ced6b08f701cf3abba62";
+    String toAddress = "2753f81d344c0cf5468ef28fa2d5a0e03e925e8d";
     String mainAddress = "e0c7d2a75ccd61af87aaa818cdcb2246706363a1";
     String txHash = "";
-    String amount = "10000";//单位（个）
-    String url = "http://172.18.92.101:38000";
+    String amount = "100000";//单位（个）
+    String url = "http://172.16.211.1:8000";
     @Test
-    public void trans() throws InterruptedException {
+    public void trans(){
         Map<String,String> readyMap = new HashMap<>();
         readyMap.put("f4fcdf9e5603a5375f9fe0c8bba951e085cdcdfc","1a7264ae5078f2a0c5b5e567457bbcedf1bdc3263ad32576c9a3c512c386ed6f");
         readyMap.put("8502208b949e7c08acb4c2f1aef06caa39891a79","fe420ae439f8d76999dd9e784ab87c400c04029076f9d22044d20d9bd1277e54");
@@ -33,7 +33,6 @@ public class TransTest extends AbstractTestNGSpringContextTests {
         String path = "/cks/tst/pbtua.do";
         url +=path;
         for(String address:readyMap.keySet()){
-            //Thread.sleep(4000);
             String pri = readyMap.get(address);
             Map<String,String> paramMap = new HashMap<>();
             paramMap.put("unionAccountAddress",mainAddress);
@@ -43,7 +42,6 @@ public class TransTest extends AbstractTestNGSpringContextTests {
             paramMap.put("relTxHash",txHash);
             paramMap.put("toAddress",toAddress);
             String resultString = restTemplate.postForObject(url,paramMap,String.class);
-            log.info("转账结果：{}",resultString);
             Map<String,Object> resultMap = JSON.parseObject(resultString,Map.class);
             if((Integer)resultMap.get("retCode") == 1){
                 String hash = resultMap.get("retMsg").toString();

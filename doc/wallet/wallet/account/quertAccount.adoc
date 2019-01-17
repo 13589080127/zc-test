@@ -1,0 +1,224 @@
+
+=== 查询账号信息
+
+
+- 流程
+
+[plantuml, format="png", id="pbgea"]
+----
+!define send(a,b,c) a[#55ff55]->b: c
+!define self(a, c) a[#ff2233]->a: c
+!define resp(a,b,c) a<-[#green]-b: c
+
+autonumber "<b>[00]"
+
+title
+创建Node管理账户
+end title
+
+send(Client, Server, 加密参数，分页数据)
+self(Server, 参数解密)
+self(Server, 查询CWV参数)
+self(Server, 查询临近节点，FramePacket？？？)
+self(Server, 组装数据)
+resp(Client,Server,成功各账号地址等信息)
+
+----
+
+- 引用
+
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqGetAccount
+- 返回：RespGetAccount
+====
+
+
+- 请求地址
+
+```
+/wlt/pbadq.do
+```
+
+
+[source,http,options="nowrap"]
+----
+POST /wlt/pbadq.do HTTP/1.1
+Content-Type: application/json
+{
+  "data": "加密的{\"addr\":\"地址\",\"type\":\"代币类型\",\"s\":20,\"p\":1}",
+  "busi": "csc"
+}
+----
+
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|`addr`
+|`String`
+|钱包地址
+
+|`type`
+|`String`
+|钱包类型
+
+|`s`
+|`int`
+|pageSize 每页显示条数
+
+|`p`
+|`int`
+|pageIndex 查询第几页
+
+|===
+
+
+- 返回参数示例
+----
+{
+  "rpl_code": 1,
+  "address": "111",
+  "account": {
+    "nonce": 2,
+    "balance": "20",
+    "pubKey": 22222222,
+    "address": "xxxxxx",
+    "code": "dsfsdfsdf",
+    "storage": 22,
+    "tokens": [
+      {
+        "token": "ercc",
+        "balance": "20"
+      },
+      {}
+    ],
+    "cryptos": [
+      {
+        "symbol": "eee",
+        "tokens": [
+          {
+            "hash": "hshshsh",
+            "timestamp": 1452254,
+            "index": 1,
+            "total": 20,
+            "code": "1234560",
+            "name": "及时雨宋公明",
+            "owner": "小霸王孙策",
+            "nonce": 2,
+            "ownertime": 14526655
+          },
+          {}
+        ]
+      },
+      {}
+    ]
+  }
+}
+----
+
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+|`address`
+|`String`
+|钱包地址
+
+|`account`
+|`Object`
+|钱包账户信息
+
+|`account.nonce`
+|`String`
+|钱包账户交易次数
+
+|`account.balance`
+|`int`
+|钱包余额
+
+|`account.pubKey`
+|`String`
+|钱包账户的公钥
+
+|`account.address`
+|`String`
+|钱包账户的地址
+
+|`account.code`
+|`String`
+|合约代码
+
+|`account.storage`
+|`String`
+|合约存储
+
+|`account.tokens`
+|`Array`
+|ERC20 token
+
+|`account.tokens.token`
+|`Array`
+|ERC20 的token名称
+
+|`account.tokens.balance`
+|`Array`
+|ERC20 的token的余额
+
+|`account.cryptos`
+|`Array`
+|ERC721 token
+
+|`account.cryptos.symbol`
+|`String`
+|ERC721 token的简称
+
+|`account.cryptos.tokens`
+|`Array`
+|ERC721 token
+
+|`account.cryptos.tokens.hash`
+|`String`
+|Token的hash，hash(index,total,code,name,timestamp)
+
+|`account.cryptos.tokens.timestamp`
+|`String`
+|Token创建时间
+
+|`account.cryptos.tokens.index`
+|`int`
+|该Token发行时的索引
+
+|`account.cryptos.tokens.total`
+|`int`
+|该Token的发行总数量
+
+|`account.cryptos.tokens.code`
+|`String`
+|Token的编号
+
+|`account.cryptos.tokens.name`
+|`String`
+|Token的名称
+
+|`account.cryptos.tokens.owner`
+|`String`
+|所有人的账户地址
+
+|`account.cryptos.tokens.nonce`
+|`int`
+|交易次数
+
+|`account.cryptos.tokens.ownertime`
+|`int`
+|所有人获取时间
+
+|===
+
+---

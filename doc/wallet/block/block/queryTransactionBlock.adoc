@@ -1,0 +1,162 @@
+=== 查询交易块
+
+
+- 描述
+
+ 用来查询最长块
+
+
+- 引用
+
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqGetTxByHash
+- 返回：RespGetBlock
+====
+
+- 请求地址：
+```
+/wlt/pbqtb.do
+```
+
+
+[source,http,options="nowrap"]
+----
+POST /blk/pbqtb.do HTTP/1.1
+Content-Type: application/json
+{
+  "data":"加密的{\"txHash\":\"交易的Hash\"}",
+  "busi":"testcsc"
+}
+----
+
+
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|data
+|String
+|{"txHash":"交易的Hash"} JSON的报文加密,txHash 是交易的HASH
+
+|busi
+|String
+|busi，对接平台：如：cwv
+
+|===
+
+- 返回参数示例
+----
+{
+  "rpl_code": 1,
+  "rpl_msg": "",
+  "version": "",
+  "header": {
+    "blockHash": "",
+    "parentHash": "",
+    "number": 0,
+    "state": "",
+    "receipt": "",
+    "txTrieRoot": "",
+    "timestamp": 13213,
+    "sliceId": 213146946,
+    "extraData": "",
+    "txHashs": [
+      "",
+      ""
+    ]
+  },
+  "miner": {
+    "node": "",
+    "reward": "",
+    "address": "",
+    "bcuid": ""
+  }
+}
+----
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+|`rpl_msg`
+|`String`
+|返回信息
+
+|`version`
+|`int`
+|版本号
+
+|`header`
+|`String`
+|交易Header
+
+|`header.blockHash`
+|`String`
+|块hash
+
+|`header.parentHash`
+|`String`
+|前一个块的Hash
+
+|`header.number`
+|`long`
+|编号
+
+|`header.state`
+|`String`
+|交易状态 D/E
+
+|`header.receipt`
+|`String`
+|凭证
+
+|`header.txTrieRoot`
+|`String`
+|交易树的根
+
+|`header.timestamp`
+|`String`
+|时间戳
+
+|`header.sliceId`
+|`long`
+|分片
+
+|`header.extraData`
+|`String`
+|额外时间
+
+|`header.txHashs`
+|`Array.String`
+|交易的Hash
+
+|`miner`
+|`Object`
+|矿工
+
+|`miner.node`
+|`String`
+|节点
+
+|`miner.reward`
+|`String`
+|奖励
+
+|`miner.address`
+|`String`
+|地址
+
+|`miner.bcuid`
+|`String`
+|bcuid
+
+
+
+|===
+

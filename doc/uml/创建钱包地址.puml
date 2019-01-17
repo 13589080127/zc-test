@@ -1,0 +1,9 @@
+@startuml
+title:创建钱包地址
+autonumber
+client->server:创建钱包地址
+note left:种子信息 send
+server->server:收到种子  send
+server->server:根据种子生成keyPair,生成数据后，将私钥公钥和地址信息存在放在数据库中
+server-->client:返回账户地址
+@enduml

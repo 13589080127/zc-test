@@ -1,0 +1,13 @@
+@startuml
+title:执行合约
+autonumber
+client->server:执行合约
+note left:input和output
+server->server:传入input和output信息
+server->server:转换请求体，设置交易类型为调动合约，使用私钥进行签名
+server->server:获得节点列表
+server->server:查询数据库得到请求url，如果url包含https,则使用数据库中配置否则是用随机节点+url请求
+server->server:对节点返回结果进行处理
+server-->server:处理返回结果
+server-->client:返回执行合约结果
+@enduml

@@ -1,0 +1,122 @@
+=== 用户注册
+
+- 描述
+
+ 用来在钱包中的用户注册
+
+
+- 引用
+
+
+////
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqDoContractTransaction
+- 返回：RespCreateTransaction
+====
+////
+
+
+
+
+- 请求地址：
+```
+/wlt/pburt.do
+```
+
+[source,http,options="nowrap"]
+----
+POST /wlt/pburt.do HTTP/1.1
+Content-Type: application/json
+{
+"userName":"",
+"mobile":"",
+"pwd":"",
+"nick":"",
+"birthday":"",
+"gender":"",
+"email":"",
+"name"：",
+"idCard":"",
+"smsPassToken":""
+} 
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description|required
+
+|`userName`
+|`String`
+|用户名称 手机号码
+|是
+
+|`mobile`
+|`String`
+|手机号码
+|是
+
+|`pwd`
+|`String`
+|登陆密码
+|是
+
+|`smsPassToken`
+|`String`
+|短信通过凭证
+|是
+
+|`nick`
+|`String`
+|昵称
+|否
+
+|`birthday`
+|`String`
+|昵称
+|否
+
+|`gender`
+|`String`
+|性别
+|否
+
+|`email`
+|`String`
+|邮箱
+|否
+
+|`name`
+|`String`
+|姓名
+|否
+
+|`idCard`
+|`String`
+|身份证号
+|否
+
+|===
+
+- 返回参数示例
+----
+{
+  "rpl_code": 1,
+  "rpl_msg": ""
+}
+----
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+|`rpl_msg`
+|`String`
+|返回信息
+
+|===
+

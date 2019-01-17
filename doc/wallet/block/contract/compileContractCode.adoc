@@ -1,0 +1,111 @@
+== 编译合约
+
+- 描述
+
+用来编译合约
+
+- 引用
+
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqCompileContract
+- 返回：RespCompileContract
+====
+
+- 请求地址：
+```
+/wlt/pbcsc.do
+```
+
+
+[source,http,options="nowrap"]
+----
+POST /blk/pbqtb.do HTTP/1.1
+Content-Type: application/json
+{
+  "data":"{\"code\":\"\",
+  \"params\":\"[{\"value\":\"2\",\"type\":\"long\"}]\",
+  \"contractName\":\"\",\"function\",\"\"}",
+  "busi":"zctest"
+}
+----
+
+
+
+- 请求参数说明
+|===
+|Path|Type|Description
+
+|data
+|String
+|参数数据
+
+|code
+|String
+|智能合约代码
+
+|params
+|String
+|智能合约参数 function为空时传入构造智能合约的参数
+
+|value
+|String
+|智能合约参数值
+
+|type
+|String
+|智能合约参数类型，默认时String,数字类型用long
+
+|function
+|String
+|智能合约的方法名字 编译智能合约方法时会用到
+
+|contractName
+|String
+|智能合约的类名
+
+|busi
+|String
+|zctest，对接平台：如：cwv
+
+|===
+
+- 返回参数示例
+----
+{
+  "rpl_code": 1,
+  "rpl_msg": "",
+  "bin":"",
+  "code":"",
+  "abi":""
+}
+----
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+|`rpl_msg`
+|`String`
+|返回信息
+
+|`bin`
+|`String`
+|编译智能合约产生的bin码
+
+|`code`
+|`String`
+|智能合约源码
+
+|`abi`
+|`String`
+|智能合约的abi
+
+|===
+
+
+

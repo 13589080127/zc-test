@@ -1,0 +1,13 @@
+:toc: left
+:toclevels: 5
+:doctype: book
+
+= 块查询接口
+用于查询块信息
+
+== 查询
+
+include::block/queryLastBlock.adoc[]
+
+
+include::block/queryTransactionBlock.adoc[]

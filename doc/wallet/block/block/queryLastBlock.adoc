@@ -1,0 +1,132 @@
+=== 最高块数据，Last Block
+
+- 描述
+
+ 用来查询最长块
+
+
+- 引用
+
+@See http://172.18.80.253/blockchain/gameapi/blob/dev-refact/src/main/proto/wallet.proto[wallet.proto]
+[NOTE]
+====
+- 请求：ReqDoContractTransaction
+- 返回：RespCreateTransaction
+====
+
+
+
+- 请求地址：
+```
+/wlt/pblbq.do
+```
+
+[source,http,options="nowrap"]
+----
+POST /blk/pblbq.do HTTP/1.1
+Content-Type: application/json
+{ }
+----
+
+- 请求参数说明
+|===
+|Path|Type|Description
+3+^|无
+
+|===
+
+- 返回参数示例
+----
+{
+  "rpl_code": 1,
+  "rpl_msg": "",
+  "parentHash": "",
+  "txTrieRoot": "",
+  "timestamp": 1,
+  "number": 1,
+  "miner": {},
+  "extraData": 1,
+  "nonce": 1,
+  "blockHash": 1,
+  "txHashs": [
+    "",
+    ""
+  ],
+  "sliceId": 1,
+  "stateRoot": 1
+}
+----
+- 返回参数说明
+|===
+|Path|Type|Description
+
+|`rpl_code`
+|`int`
+|响应码
+
+|`rpl_msg`
+|`String`
+|返回信息
+
+|`parentHash`
+|`String`
+|父块HASH
+
+|`txTrieRoot`
+|`String`
+|交易数据根Hash
+
+|`timestamp`
+|`Number`
+|时间戳
+
+|`number`
+|`Number`
+|交易量
+
+|`miner`
+|`Object`
+|打包节点（矿工）
+
+|`miner.node`
+|`String`
+|节点名称
+
+|`miner.reward`
+|`String`
+|节点奖励
+
+|`miner.address`
+|`String`
+|地址
+
+|`miner.bcuid`
+|`String`
+|节点bcuid
+
+|`extraData`
+|`String`
+|交易额外数据
+
+|`nonce`
+|`String`
+|交易频次
+
+|`blockHash`
+|`String`
+|块Hash标记
+
+|`txHashs`
+|`String`
+|交易Hash列表
+
+|`sliceId`
+|`String`
+|分片ID
+
+|`stateRoot`
+|`String`
+|状态根
+
+|===
+

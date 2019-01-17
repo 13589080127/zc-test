@@ -1,0 +1,16 @@
+@startuml
+title:创建合约
+autonumber
+client->server:创建合约
+note left: input信息，output信息，代理信息，交易数量
+server->server:交易地址，\n交易金额\n交易额外参数\n交易参数
+server->server:拼装交易请求，类型为创建合约类型，使用私钥进行签名
+server->server:查询mysql数据库创建合约的url，查询节点信息
+server->server:循环请求节点创建合约url
+server->server:请求成功时，停止循环
+server->server:处理返回结果
+alt 创建成功
+server->server:将智能合约信息插入到数据库
+end
+server-->client:返回创建合约结果
+@enduml
