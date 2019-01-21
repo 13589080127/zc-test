@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.DelayQueue;
 
+/**
+ * 过期队列 优先取出已经过期的元素，放入队列的元素需要继承 Delayed
+ */
 public class DeplayBlockingQueue {
 
     private static DelayQueue<Account> delayQueue = new DelayQueue();

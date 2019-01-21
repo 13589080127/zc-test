@@ -57,4 +57,17 @@ public class Trans107Test extends AbstractTestNGSpringContextTests {
         }
         log.info("转账结束===========");
     }
+    public static void main(String[] args) {
+
+        try{
+            if(1==1) {
+                System.out.println("1==1");
+                return;
+            }
+
+        }finally {
+            System.out.println("finally");
+        }
+        System.out.println("main is end");
+    }
 }

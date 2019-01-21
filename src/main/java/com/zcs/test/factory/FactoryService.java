@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class FactoryService {
-    private Map<String,BussinessService> map = new ConcurrentHashMap<>();
+    private Map<String,BussinessService> map;
     @Autowired
     public FactoryService(Map<String,BussinessService> map){
         this.map = map;

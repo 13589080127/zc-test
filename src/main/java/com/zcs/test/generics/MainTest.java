@@ -5,7 +5,12 @@ import com.alibaba.fastjson.JSON;
 import java.util.*;
 
 public class MainTest {
-
+    /**
+     * 泛型的规则， product extends consum super pecs 作为生产者的时候 使用? extends xx,作为消费者的时候 使用 ? super xx
+     * @param args
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
        /* GenericsT<List<String>> genericsT = new GenericsT<>();
         List<String> a = new ArrayList<>();
