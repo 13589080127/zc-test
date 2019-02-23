@@ -7,23 +7,43 @@
 [NOTE]
 ====
 - 请求：所有接口请求时需要在http header里面添加X-APP-AUTH，登录后添加GRANT-TOKEN
+
 |====
-|Path|Type|Description
+|Path|Type|Description|require
 
 |`appId`
 |`String`
 |app应用唯一id
+|是
 
 |`busi`
 |`String`
 |业务id
+|是
+
+|`appVersion`
+|`String`
+|当前app的版本
+|否
+
+|`osVersion`
+|`String`
+|当前app所在系统的版本号
+|否
+
+|`osType`
+|`String`
+|当前app所在系统类型
+|否
 
 |====
-
 ----
 X-APP-AUTH{
 	"appId":"10000089",
-	"busi":"zctest"
+	"busi":"zctest",
+	"osVersion":"1.0",
+	"osType":"ios",
+	"appVersion":"1.0"
 }
 GRANT-TOKEN:"xxxxxxxxxxx"
 ----

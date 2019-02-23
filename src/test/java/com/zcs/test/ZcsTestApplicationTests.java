@@ -11,6 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 public class ZcsTestApplicationTests extends AbstractTestNGSpringContextTests {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -24,4 +27,6 @@ public class ZcsTestApplicationTests extends AbstractTestNGSpringContextTests {
 		logger.info("result:{}",JSON.toJSONString(brandInfo));
 		Assert.assertNotNull(brandInfo);
 	}
+
+
 }
