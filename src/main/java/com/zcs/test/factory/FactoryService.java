@@ -21,4 +21,5 @@ public class FactoryService {
     public Object execute(String appId,Object o){
         return map.get(appId).deal(o);
     }
+
 }
