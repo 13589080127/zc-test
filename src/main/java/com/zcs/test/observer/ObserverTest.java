@@ -29,7 +29,7 @@ public class ObserverTest {
         Thread.sleep(5000);
 //        basicRxjava2();
     }
-    private Prm
+//    private Prm
     private static Observable<String> getObserver(){
         return Observable.create(s->{
 //            s.onComplete();

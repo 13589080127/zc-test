@@ -1,0 +1,40 @@
+@startuml
+title:用户中心注册用户
+autonumber
+tsm->uc: 查询用户信息，appId,extUserId
+uc->uc:根据appId查询是外部app还是内部app
+alt 内部app
+uc->uc:判断extUserId是否存在c类表中
+alt 存在
+uc-->tsm:返回result=2,cUserId,用户参数信息
+else 不存在
+uc-->tsm:验证失败 result=1(是内部app，且userid不存在)
+end
+else 外部app
+uc->uc:根据外部客户号查询（c_ext_user）是否存在信息
+alt 存在
+uc-->tsm:返回result=2,cUserId，用户参数信息
+else 不存在
+uc-->tsm:result=2(是外部app,且userId不存在)
+end
+end
+tsm->tsm:判断result的结果
+alt 是内部app，且userid不存在
+tsm->tsm:返回用户信息不合法
+else 是外部app,且userId不存在
+tsm->uc:调用外部app注册接口，extUserId,用户参数信息
+uc->uc:判断appid和extUserId是否存在
+alt 存在
+uc-->tsm:已注册
+else 不存在
+uc->uc:新增用户信息，产生cUserid
+note right:详细参见用户中心新增用户设计
+uc-->tsm:返回cUserId
+end
+else result=2（存在用户信息）
+tsm->tsm:拼装请求交换申请用户se的参数
+tsm->rout:申请用户se applySe，ApplySeReq
+rout-->tsm:申请用户se结果 se
+tsm->tsm:保存或更新用户信息，保存或更新用户和设备之间的关系信息
+end
+@enduml

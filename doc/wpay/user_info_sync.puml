@@ -1,0 +1,16 @@
+@startuml
+title:用户信息同步
+autonumber
+APP->APP:用户绑定手机号码/用户绑定邮箱/用户更换手机号码/用户更换邮箱/生成用户id
+APP->WL_SERVER:用户绑定/更换用户名信息
+WL_SERVER->WL_SERVER:校验更换信息的有效性
+WL_SERVER->PAY_SERVER:请求支付服务器更新用户信息接口
+PAY_SERVER->PAY_SERVER:更新用户信息
+PAY_SERVER-->WL_SERVER:返回更新用户信息结果
+WL_SERVER->WL_SERVER:判断更新用户信息结果
+alt 更新成功
+WL_SERVER->WL_SERVER:更新本地数据库
+else 更新失败
+WL_SERVER-->APP:返回具体失败原因
+end
+@enduml

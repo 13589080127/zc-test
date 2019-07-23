@@ -1,0 +1,32 @@
+@startuml
+autonumber
+title:转账
+SDK->SDK:点击转账
+SDK->PSM:获取默认支付账户
+PSM->SDK:返回
+SDK->SDK:输入收款卡号或手机号码
+SDK->PSM: userName, 查询收款客户信息 付款卡号
+PSM->PSM:判断userName是否存在本系统，查询csc_app_userName的userName字段和extUserId字段
+alt 不存在
+PSM->PSM:判断userName格式是否是手机号码
+alt 是手机号码
+PSM->PSM:发送通知短信
+end
+PSM->SDK:返回未查询到收款人信息
+end
+PSM->ams:根据付款卡号查询转账规则 cardId
+ams->ams:转账规则查询
+ams->PSM:转账规则，付款卡号的机构号和品牌号
+PSM->PSM: 获得当前用户所拥有的卡片列表
+PSM->PSM:判断是否拥有同机构同品牌的卡片
+alt 不存在
+PSM->SDK:此用户无同品牌卡片，无法转账
+end
+PSM->PSM:判断卡号是否是同机构同品牌卡号
+alt 不是
+PSM->SDK:非相同品牌卡片，无法转账
+end
+PSM->PSM:保存客户收款卡信息，付款卡信息到redis 产生token
+PSM->SDK:token,客户信息
+SDK->SDK:展示客户信息
+@enduml

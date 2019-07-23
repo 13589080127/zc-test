@@ -1,0 +1,16 @@
+@startuml
+title:更换手机号码
+autonumber
+SDK->SDK:点击更换手机号码
+SDK->PSM:请求更换手机号码接口
+note left:newPhone(新手机号码)\nnewPhoneAreaCode(新手机号码区号)\noldPhone(老的手机号码)\noldPhoneAreaCode(老的手机号码区号)
+PSM->WL_SERVER:请求更换手机号码接口
+WL_SERVER->PSM:更换手机号码结果
+PSM->PSM:判断更换结果
+alt 更换成功
+PSM->PSM:删除csc_app_user_name 表中的数据，新增新手机号码，将新手机号码区号更新到user_param中
+PSM-->SDK:返回更换结果
+else 更换失败
+PSM-->SDK:返回更换失败
+end
+@enduml
