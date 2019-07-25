@@ -1,0 +1,61 @@
+@startuml
+title:初始化SDK
+autonumber
+participant APP
+participant SDK
+participant WL_SERVER
+participant PAY_SERVER
+APP->APP:用户使用手机号码注册登录
+APP->APP:填写验证码，设置登录密码，选择国家区号
+APP->WL_SERVER:手机号码注册用户
+WL_SERVER->WL_SERVER:产生用户id,extUserId
+WL_SERVER->PAY_SERVER:同步用户信息
+note left:extUserId,用户id
+PAY_SERVER->PAY_SERVER:保存用户id,extUserId
+PAY_SERVER-->WL_SERVER:返回同步用户信息结果
+WL_SERVER->WL_SERVER:判断更新用户信息结果
+alt 更新成功
+WL_SERVER->WL_SERVER:更新本地数据库
+WL_SERVER->APP:返回extUserId,phone,phoneAreaCode
+else 更新失败
+WL_SERVER-->APP:返回具体失败原因
+APP->SDK:加载SDK
+note left : userName(手机号码)\nareaCode(国家区号)\nextUserId\nphoneAreaCode(手机号码区号)\nuserNameType(用户名类型,1:手机号码，2：邮箱，3：第三方)
+SDK->PAY_SERVER:初始化用户信息
+...
+APP->APP:用户使用第三方注册登录
+APP->APP:选择国家区号，获取用户昵称
+APP->WL_SERVER:第三方注册用户
+WL_SERVER->WL_SERVER:产生用户id,extUserId
+WL_SERVER->PAY_SERVER:同步用户信息
+note left:extUserId,用户id
+PAY_SERVER->PAY_SERVER:保存用户id,extUserId
+PAY_SERVER-->WL_SERVER:返回同步用户信息结果
+WL_SERVER->WL_SERVER:判断更新用户信息结果
+alt 更新成功
+WL_SERVER->WL_SERVER:更新本地数据库
+WL_SERVER->APP:返回extUserId,昵称
+else 更新失败
+WL_SERVER-->APP:返回具体失败原因
+APP->SDK:加载SDK
+note left : userName(昵称)\nareaCode(国家区号)\nextUserId\nuserNameType(用户名类型,1:手机号码，2：邮箱，3：第三方)
+SDK->PAY_SERVER:初始化用户信息
+...
+APP->APP:用户使用邮箱注册登录
+APP->APP:填写邮箱验证码，设置登录密码，选择国家区号
+APP->WL_SERVER:邮箱注册用户
+WL_SERVER->WL_SERVER:产生用户id,extUserId
+WL_SERVER->PAY_SERVER:同步用户信息
+note left:extUserId,用户id
+PAY_SERVER->PAY_SERVER:保存用户id,extUserId
+PAY_SERVER-->WL_SERVER:返回同步用户信息结果
+WL_SERVER->WL_SERVER:判断更新用户信息结果
+alt 更新成功
+WL_SERVER->WL_SERVER:更新本地数据库
+WL_SERVER->APP:返回extUserId,email,phoneAreaCode
+else 更新失败
+WL_SERVER-->APP:返回具体失败原因
+APP->SDK:加载SDK
+note left : userName(邮箱)\nareaCode(国家区号)\nextUserId\nuserNameType(用户名类型,1:手机号码，2：邮箱，3：第三方)
+SDK->PAY_SERVER:初始化用户信息
+@enduml
