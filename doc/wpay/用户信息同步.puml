@@ -1,15 +1,30 @@
 @startuml
 title:用户信息同步
 autonumber
-W_SEVER->PAY_SERVER:用户信息同步
+WL_SEVER->PAY_SERVER:用户信息同步
 note left:外部用户号,userParams,delParams
 PAY_SERVER->PAY_SERVER:判断外部用户号是否存在
 alt 外部用户号不存在
+PAY_SERVER->UC:外部用户注册接口注册用户
+note left:extUserId（外部用户号）\n userName(用户名) \n appId
+UC->UC:判断用户是否已经存在
+alt 用户已经存在
+UC-->PAY_SERVER:返回用户已经存在错误
+else 用户不存在
+UC->UC:注册用户产生CuserId
+UC-->PAY_SERVER:返回cuserId
+end
+PAY_SERVER->PAY_SERVER:判断返回结果是否正确
+alt 返回结果错误
+PAY_SERVER->WL_SEVER:返回错误信息
+else 返回结果正确
+PAY_SERVER->PAY_SERVER:取出cUserId
 PAY_SERVER->PAY_SERVER:在csc_app_user表中新增一条记录\n在csc_app_user_map中新建用户id关系\n在csc_app_userName中新增一条用户名数据
 PAY_SERVER->PAY_SERVER:新增用户对应的昵称，实名信息
+end
 else 外部用户号已经存在
 PAY_SERVER->PAY_SERVER:新增或者更新userParams的字段信息，更新用户缓存信息（不再更新到用户中心）
 PAY_SERVER->PAY_SERVER:删除delParams的字段信息，更新用户缓存信息
-PAY_SERVER-->W_SEVER:返回更新结果
+PAY_SERVER-->WL_SEVER:返回更新结果
 end
 @enduml

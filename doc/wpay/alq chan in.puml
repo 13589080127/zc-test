@@ -1,0 +1,24 @@
+@startuml
+title:阿联酋渠道接入
+autonumber
+SDK->SDK:点击充值按钮为账户余额充值
+SDK->SDK:输入充值金额
+SDK->APPS:查询充值方式
+note left:机构号，品牌号，产品号
+APPS->AMS:查询哪些渠道可以为当前机构号和品牌号产品号进行充值（充值权限和充值规则）
+AMS->AMS:查询可以为当前机构号和品牌号充值的渠道
+AMS->AMS:根据机构号品牌号和产品号查询充值规则
+AMS-->APPS:返回充值方式和充值规则
+APPS->APP:返回充值方式和充值规则和渠道对应的图标信息
+APP->APP:选择充值渠道
+alt SADAD的充值渠道
+APP->APP:原充值流程
+else 阿联酋充值渠道
+APP->APPS:预阿联酋充值
+note left:金额，币种
+
+
+
+end
+
+@enduml
