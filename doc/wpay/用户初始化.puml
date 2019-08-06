@@ -2,28 +2,18 @@
 title:用户初始化
 autonumber
 APP->SDK:加载用户se
-note left:国家区号（不能为空）\n外部用户号（不能为空）\n userName(用户名) \nuserNameType(用户名类型  2：手机号码，4：邮箱，8：第三方)
+note left:外部用户号
 SDK->TSM:申请用户se
-note left:国家区号\n外部用户号\nuserName（用户名）\n挑战码\nappId
-TSM->TSM:原流程到用户中心注册或者找回用户信息
-TSM->TSM:申请用户se
-TSM->PSM:用户注册或登录
-note left:cUserId\n外部用户号\nappId \n国家区号\nuserName(用户名)
-PSM->PSM:判断csc_app_uer_map表中外部用户号是否存在
-alt 外部用户号已经存在
-PSM->PSM:判断当前外部用户号对应的cuserId是否为空
-alt cuserId为空 （用户未启动sdk，用户信息由对方服务器更新过来的情况）
-PSM->PSM:将cuserId更新至数据库中，更新国家区号字段至csc_app_user表中，将\nuser_name\nuserNameType\nextUserId \n插入到csc_app_userName表中
-PSM->PSM:判断当前用户的昵称是否为空
-alt 昵称为空
-PSM->PSM:将user_name更新至昵称字段
+note left:外部用户号 \nappId
+TSM->UC:根据appId,外部用户号查询用户信息
+UC->UC:查询appId类型，外部用户号是否存在
+UC-->TSM:返回查询结果
+TSM->TSM:判断查询结果
+alt 是外部app且存在用户信息
+TSM->ROUT:申请用户se
+ROUT-->TSM:返回用户se
+TSM-->SDK:返回用户se，cUserId
+else 其他的出错
+TSM-->SDK:返回用户信息异常
 end
-end
-else cuserId不为空（用户已经注册过的情况）
-PSM->PSM:将用户信息更新至缓存中，在缓存中增加 手机号码，邮箱字段，国家区号替代原来的区号字段
-PSM-->TSM:返回cUserId,支付密码设置状态，默认卡号
-TSM-->SDK:cuserId,用户se
-end
-
-
 @enduml

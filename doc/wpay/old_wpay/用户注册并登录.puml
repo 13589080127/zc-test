@@ -1,0 +1,13 @@
+@startuml
+title:调用PSM用户登录并注册
+autonumber
+TSM->TSM:申请用户se
+TSM->PSM:登录并注册
+note left: cuserId\nphone\nphoneAreaCode\nappId\nextUserId
+PSM->PSM:根据cuserId和外部用户号判断用户是否存在
+alt 用户不存在
+PSM-->TSM:用户信息错误
+else 用户存在
+PSM-->TSM:返回目前接口返回的用户信息
+end
+@enduml

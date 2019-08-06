@@ -1,0 +1,32 @@
+@startuml
+title:权限认证
+autonumber
+APP->APP:输入用户名密码/验证码
+APP->WL_SERVER:调用登录接口
+WL_SERVER->PSM:调用生成accessToken接口
+note left:使用pack加密签名\n参数：extUserId,appId
+PSM->PSM:产生accessToken，缓存extUserId 和 accessToken的关系
+PSM-->WL_SERVER:返回accessToken
+WL_SERVER-->APP:返回accessToken
+APP->SDK:启动sdk
+note left:accessToken\n extUserId
+SDK->SDK:申请设备se
+SDK->TSM:申请用户se
+TSM->ROUT:申请用户se
+ROUT-->TSM:返回用户se
+TSM->PSM:用户信息初始化
+note left:accessToken\ncuserId\nextUserId
+PSM->PSM:初始化用户信息
+PSM->PSM:根据extUserId查询redis
+PSM->PSM:判断查询结果
+alt 查询结果为空
+PSM->PSM:将当前用户的u-token和deviceId放入redis中
+PSM-->TSM:返回cuserId
+TSM-->SDK:返回cuserId
+else 查询结果不为空（找回用户se的情况）
+PSM->PSM:根据结果取出u-token和deviceId
+PSM->PSM:
+
+
+end
+@enduml

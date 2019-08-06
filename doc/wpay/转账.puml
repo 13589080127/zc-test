@@ -4,9 +4,10 @@ title:转账
 SDK->SDK:点击转账
 SDK->PSM:获取默认支付账户
 PSM->SDK:返回
-SDK->SDK:输入收款卡号或手机号码
-SDK->PSM: userName, 查询收款客户信息 付款卡号
-PSM->PSM:判断userName是否存在本系统，查询csc_app_userName的userName字段和extUserId字段
+SDK->SDK:输入手机号码/邮箱/用户id
+SDK->PSM: 查询收款客户信息
+note left:userName(手机号码/邮箱/用户id)\nuserNameType(1:手机号码，2：邮箱，3：用户id)\n付款卡号
+PSM->PSM:判断userName是否存在本系统，查询csc_app_userName的userName字段和userNameType字段
 alt 不存在
 PSM->PSM:判断userName格式是否是手机号码
 alt 是手机号码

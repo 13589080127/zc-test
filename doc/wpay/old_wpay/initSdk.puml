@@ -1,0 +1,21 @@
+@startuml
+title:老版本兼容登录注册
+autonumber
+APP->APP:用户输入手机号码点击登录或者注册
+APP->WL_SERVER:调用登录/注册接口
+WL_SERVER->WL_SERVER:判断是用户登录还是用户注册
+alt 用户注册
+WL_SERVER->WL_SERVER:生成extUserId
+WL_SERVER->PAY_SERVER:用户信息同步
+note left:userName(手机号码)\nextUserId\nphoneAreaCode(手机区号)\nareaCode(国际区号)
+PAY_SERVER->PAY_SERVER:保存用户信息
+PAY_SERVER-->WL_SERVER:返回同步用户信息结果
+WL_SERVER->WL_SERVER:判断同步用户信息结果
+alt 同步成功
+WL_SERVER->WL_SERVER:保存用户信息
+WL_SERVER-->APP:返回结果
+else 同步异常
+WL_SERVER-->APP:返回异常信息
+end
+end
+@enduml

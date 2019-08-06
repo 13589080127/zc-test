@@ -1,61 +1,87 @@
 @startuml
 title:初始化SDK
 autonumber
-participant APP
-participant SDK
-participant WL_SERVER
-participant PAY_SERVER
-APP->APP:用户使用手机号码注册登录
+participant  Wpay as APP
+participant 支付sdk as SDK
+participant 业务服务端 as WL_SERVER
+participant 支付服务端 as PAY_SERVER
+APP->APP:用户使用手机号码/邮箱/第三方注册登录
 APP->APP:填写验证码，设置登录密码，选择国家区号
-APP->WL_SERVER:手机号码注册用户
+APP->WL_SERVER:手机号码/邮箱/第三方注册注册登录
+WL_SERVER->WL_SERVER:判断是否是用户注册
+alt 用户注册
 WL_SERVER->WL_SERVER:产生用户id,extUserId
 WL_SERVER->PAY_SERVER:同步用户信息
-note left:extUserId,用户id
-PAY_SERVER->PAY_SERVER:保存用户id,extUserId
-PAY_SERVER-->WL_SERVER:返回同步用户信息结果
+note left : userName(手机号码/邮箱/用户id)\nareaCode(国家区号)\nextUserId\nphoneAreaCode(手机号码区号)\nuserNameType(用户名类型,1:手机号码，2：邮箱，3：userId)
+PAY_SERVER->PAY_SERVER:保存同步的用户信息
+PAY_SERVER-->WL_SERVER:返回同步用户信息结果 cUserId（支付服务器的唯一用户号）,accessToken（用户身份凭证）
 WL_SERVER->WL_SERVER:判断更新用户信息结果
 alt 更新成功
 WL_SERVER->WL_SERVER:更新本地数据库
-WL_SERVER->APP:返回extUserId,phone,phoneAreaCode
+WL_SERVER->APP:返回accessToken
 else 更新失败
 WL_SERVER-->APP:返回具体失败原因
+end
+else 用户登录
+WL_SERVER->PAY_SERVER:获取当前用户的accessToken
+note left:extUserId,appId
+PAY_SERVER->PAY_SERVER:为当前用户产生accessToken,覆盖之前用户产生的accessToken
+PAY_SERVER-->WL_SERVER:返回accessToken
+WL_SERVER-->APP:返回accessToken
+end
 APP->SDK:加载SDK
-note left : userName(手机号码)\nareaCode(国家区号)\nextUserId\nphoneAreaCode(手机号码区号)\nuserNameType(用户名类型,1:手机号码，2：邮箱，3：第三方)
+note left:extUserId\naccessToken
 SDK->PAY_SERVER:初始化用户信息
+note left:extUserId \naccessToken
+PAY_SERVER->PAY_SERVER:根据APP版本核对extUserId和accessToken的合法性
+alt 核对失败
+PAY_SERVER-->SDK:返回用户状态异常错误码
+else 核对成功
+PAY_SERVER->PAY_SERVER:初始化用户信息
+PAY_SERVER-->SDK:返回初始化结果
+end
+SDK->SDK:判断接口返回的错误码
+alt 用户状态异常的错误码
+SDK->SDK:调用抽象获取accessToken的方法
+APP->WL_SERVER:获取accessToken接口
+WL_SERVER->WL_SERVER:校验APP的用户状态
+alt 校验失败
+WL_SERVER-->APP:返回登录token失效
+APP->APP:跳转登录页面
+end
+WL_SERVER->PAY_SERVER:获取accessToken接口
+PAY_SERVER-->WL_SERVER:返回accessToken
+WL_SERVER-->SDK:返回accessToken
+SDK->SDK:重试初始化用户信息
+else 接口返回正常
+SDK->SDK:正常展示结果
+end
 ...
-APP->APP:用户使用第三方注册登录
-APP->APP:选择国家区号，获取用户昵称
-APP->WL_SERVER:第三方注册用户
-WL_SERVER->WL_SERVER:产生用户id,extUserId
-WL_SERVER->PAY_SERVER:同步用户信息
-note left:extUserId,用户id
-PAY_SERVER->PAY_SERVER:保存用户id,extUserId
-PAY_SERVER-->WL_SERVER:返回同步用户信息结果
-WL_SERVER->WL_SERVER:判断更新用户信息结果
-alt 更新成功
-WL_SERVER->WL_SERVER:更新本地数据库
-WL_SERVER->APP:返回extUserId,昵称
-else 更新失败
-WL_SERVER-->APP:返回具体失败原因
-APP->SDK:加载SDK
-note left : userName(昵称)\nareaCode(国家区号)\nextUserId\nuserNameType(用户名类型,1:手机号码，2：邮箱，3：第三方)
-SDK->PAY_SERVER:初始化用户信息
-...
-APP->APP:用户使用邮箱注册登录
-APP->APP:填写邮箱验证码，设置登录密码，选择国家区号
-APP->WL_SERVER:邮箱注册用户
-WL_SERVER->WL_SERVER:产生用户id,extUserId
-WL_SERVER->PAY_SERVER:同步用户信息
-note left:extUserId,用户id
-PAY_SERVER->PAY_SERVER:保存用户id,extUserId
-PAY_SERVER-->WL_SERVER:返回同步用户信息结果
-WL_SERVER->WL_SERVER:判断更新用户信息结果
-alt 更新成功
-WL_SERVER->WL_SERVER:更新本地数据库
-WL_SERVER->APP:返回extUserId,email,phoneAreaCode
-else 更新失败
-WL_SERVER-->APP:返回具体失败原因
-APP->SDK:加载SDK
-note left : userName(邮箱)\nareaCode(国家区号)\nextUserId\nuserNameType(用户名类型,1:手机号码，2：邮箱，3：第三方)
-SDK->PAY_SERVER:初始化用户信息
+APP->SDK:查询账户余额
+SDK->PAY_SERVER:查询账户余额
+note left: accessToken,extUserId
+PAY_SERVER->PAY_SERVER:根据APP版本校验extUserId对应的accessToken
+alt 校验成功
+PAY_SERVER->PAY_SERVER:更新accessToken的有效时长
+PAY_SERVER->PAY_SERVER:允许交易
+PAY_SERVER-->SDK:返回查询结果
+else 校验失败
+PAY_SERVER-->SDK:返回用户状态异常
+end
+SDK->SDK:判断接口返回的错误码
+alt 用户状态异常的错误码
+SDK->SDK:调用抽象获取accessToken的方法
+APP->WL_SERVER:获取accessToken接口
+WL_SERVER->WL_SERVER:校验APP的用户状态
+alt 校验失败
+WL_SERVER-->APP:返回登录token失败
+APP->APP:跳转登录页面
+end
+WL_SERVER->PAY_SERVER:获取accessToken接口
+PAY_SERVER-->WL_SERVER:返回accessToken
+WL_SERVER-->SDK:返回accessToken
+SDK->SDK:重试查询余额
+else 接口返回正常
+SDK->SDK:正常展示结果
+end
 @enduml
