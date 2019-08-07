@@ -1,0 +1,16 @@
+@startuml
+title:数据同步
+participant 支付服务端 as PAY_SERVER
+participant 业务服务端 as WL_SERVER
+PAY_SERVER->PAY_SERVER:定时任务1分钟查询本地数据库
+PAY_SERVER->WL_SERVER:调用接口进行同步交易数据
+WL_SERVER-->PAY_SERVER:返回同步结果
+alt 明确返回同步失败
+PAY_SERVER->PAY_SERVER:储存同步信息到数据库，进入下一次同步
+else 返回http 状态码非200
+PAY_SERVER->PAY_SERVER:重试同步5次
+alt 重试5次依然失败
+PAY_SERVER->PAY_SERVER:储存同步信息到数据库
+end
+end
+@enduml

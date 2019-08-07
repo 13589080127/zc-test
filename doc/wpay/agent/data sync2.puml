@@ -1,0 +1,10 @@
+@startuml
+title:数据同步
+participant 业务服务端 as WL_SERVER
+participant 支付服务端 as PAY_SERVER
+WL_SERVER->PAY_SERVER:分页同步代理商的交易数据
+note left:extUserIdList（有条数限制）,startTime,endTime
+PAY_SERVER->PAY_SERVER:查询当前所有extUserId在此时间段的交易数据
+PAY_SERVER-->WL_SERVER:返回查询结果
+WL_SERVER->WL_SERVER:将查询数据库同步到数据库
+@enduml

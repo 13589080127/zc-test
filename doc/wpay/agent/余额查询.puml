@@ -1,0 +1,16 @@
+@startuml
+title:余额查询
+autonumber
+participant 业务服务端 as WL_SERVER
+participant 支付服务端 as PAY_SERVER
+WL_SERVER->PAY_SERVER:查询代理商的余额信息
+note left:extUserIdList（有条数限制）
+PAY_SERVER->PAY_SERVER:判断缓存是否已经存在相同的渠道号和查询余额业务
+alt 存在
+PAY_SERVER-->WL_SERVER:交易频繁请稍后再试
+else 不存在
+PAY_SERVER->PAY_SERVER:查询余额
+PAY_SERVER->PAY_SERVER:将此渠道号和查询余额业务放入缓存2秒钟
+PAY_SERVER-->WL_SERVER:返回查询结果
+end
+@enduml

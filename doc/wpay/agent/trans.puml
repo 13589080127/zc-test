@@ -1,0 +1,11 @@
+@startuml
+title:转账
+autonumber
+participant 业务服务端 as WL_SERVER
+participant 支付服务端 as PAY_SERVER
+WL_SERVER->WL_SERVER:点击转账
+WL_SERVER->PAY_SERVER:请求转账接口
+note left:转出方extUserId\n转入方extUserId\n转账金额 amount 单位美分
+PAY_SERVER->PAY_SERVER:执行转账操作
+PAY_SERVER-->WL_SERVER:返回转账结果
+@enduml
