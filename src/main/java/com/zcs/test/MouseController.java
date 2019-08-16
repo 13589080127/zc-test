@@ -1,10 +1,15 @@
 package com.zcs.test;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.math.RandomUtils;
+
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.util.Random;
+import java.util.UUID;
 
 
 /**
@@ -57,17 +62,9 @@ public class MouseController implements Runnable {
         stop = true;
     }
     public static void main(String[] args) {
-        MouseController mc = new MouseController();
-        Thread mcThread = new Thread(mc);
-        System.out.println("Mouse Controller start");
-        mcThread.start();
-        try {
-            Thread.sleep(60000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+        while (true){
+            System.out.println(RandomStringUtils.randomNumeric(5));;
         }
-        mc.stop();
-        System.out.println("Mouse Controller stoped");
     }
 }
 

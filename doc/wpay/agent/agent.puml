@@ -10,8 +10,11 @@ SDK->SDK:点击转账/扫码转账
 SDK->PAY_SERVER:请求接口进行转账
 PAY_SERVER->PAY_SERVER:进行交易
 alt 交易成功
-PAY_SERVER->MQ:将交易信息放入redis中，key：chan_id-UUID 插入失败放入数据库
+PAY_SERVER->MQ:将交易信息异步放入mq中，queue: apps_trans_info
 MQ->PAY_SERVER:返回存储结果
+alt 存储失败
+PAY_SERVER->PAY_SERVER:将失败数据放入数据库 ps_order_sync
+end
 PAY_SERVER-->SDK:返回交易成功
 else 交易失败
 PAY_SERVER-->SDK:返回交易失败
@@ -19,17 +22,20 @@ end
 ...
 CONSUMER->MQ:消费队列
 MQ->CONSUMER:返回消费的数据
-CONSUMER->CONSUMER:一次取出500个
-CONSUMER->CONSUMER:循环每一个key
-CONSUMER->CONSUMER:取出chanId的值
-CONSUMER->CONSUMER:根据渠道Id 查询回调url和回调方法
-CONSUMER->WL_SERVER:异步请求接口进行同步
+CONSUMER->CONSUMER:将数据放入数据库中ps_order_sync
+...
+CONSUMER->CONSUMER:定时任务根据时间查询数据库（ps_order_sync）同步次数小于3的500条数据
+CONSUMER->WL_SERVER:请求接口进行同步
 WL_SERVER-->CONSUMER:返回同步接口
 CONSUMER->CONSUMER:判断同步信息结果
 alt 同步失败
 CONSUMER->CONSUMER:重试五次同步
-CONSUMER->CONSUMER:最后依然失败，将交易信息放入到数据库中
+alt 同步成功
+CONSUMER->CONSUMER:根据主键删除已经同步的数据ps_order_sync
+else 同步失败
+CONSUMER->CONSUMER:将当前数据的同步次数字段加1，更新到数据库ps_order_sync
+end
 else 同步成功
-CONSUMER->CONSUMER:同步结束
+CONSUMER->CONSUMER:根据主键删除已经同步的数据ps_order_sync
 end
 @enduml

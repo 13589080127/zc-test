@@ -1,0 +1,10 @@
+@startuml
+autonumber
+title:查询收款人信息
+app->appmanage:查询收款客户信息
+note left:手机号码/邮箱/userId type:1,2,3
+appmanage->appmanage:判断用户是否存在
+appmanage->appmanage:保存客户收款卡信息，付款卡信息到redis 产生token
+appmanage->app:token,客户信息
+app->app:展示客户信息
+@enduml
