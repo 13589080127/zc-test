@@ -1,0 +1,60 @@
+@startuml
+title:支付限额 lgm-apps
+autonumber
+APP->APP:扫码支付/h5唤醒支付/SDK调起支付
+APP->APPS:根据商户号查询支付活动
+note left:merId(商户号)/n amount(金额)/ncurrency(币种)
+APPS->APPS:判断商户号是否存在
+alt 商户号不存在
+APPS-->APP:返回商户不存在
+else 商户号存在
+APPS->APPS:查询当前请求用户的默认卡号
+APPS->APPS:判断默认卡号和商户号是否支付活动绑定关系
+alt 未绑定支付活动
+APPS-->APP:返回未找到可用的支付方式
+else 已绑定支付活动
+APPS->APPS:处理多币种的展示方式
+APPS->APPS:判断卡余额和需要支付的金额大小
+alt 余额不足
+APPS->APPS:判断商户是否是测试商户
+alt 是测试商户
+APPS->APPS:判断支付的金额是否在卡的单笔的最大最小金额范围
+alt 在区间范围内
+APPS->APPS:将余额置为可用
+else 不在区间范围内
+APPS->APPS:将余额置为不可用，并返回最大金额
+end
+else 不是测试商户
+APPS->APPS:标识余额不足
+end
+else 余额足够
+APPS->APPS:标识余额可用
+APPS->APPS:判断支付的金额是否在卡的单笔的最大最小金额范围
+alt 在区间范围内
+APPS->APPS:将余额置为可用
+else 不在区间范围内
+APPS->APPS:将余额置为不可用，并返回最大金额
+end
+end
+APPS->APPS:查询当前配置的渠道信息
+alt 渠道信息为空
+APPS-->APP:返回查询结果
+else 渠道信息不为空
+APPS->APPS:查询支付渠道为开的渠道
+APPS->APPS:得到当前支付渠道限制的地区列表
+APPS->APPS:判断当前渠道的地区列表是否支持用户的国家区号
+alt 支持
+APPS->APPS:判断支付的金额是否在渠道的最大最小金额范围
+alt 在区间范围内
+APPS->APPS:将渠道置为可用
+else 不在区间范围内
+APPS->APPS:将渠道置为不可用，并返回最大金额
+end
+end
+end
+APPS-->APP:返回最后的查询结果list
+end
+end
+
+
+@enduml
