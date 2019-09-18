@@ -1,0 +1,38 @@
+@startuml
+title:邮箱激活
+autonumber
+浏览器->浏览器:点击激活链接
+浏览器->H5:跳转到h5页面
+H5->APPS:请求服务端激活用户
+note left:邮箱，sign
+APPS->APPS:验证签名
+alt 验证失败
+APPS-->H5:返回链接已经失效
+else 验证成功
+APPS->APPS:根据邮箱查询redis，判断value的签名是否是当前传入的签名
+alt redis的签名和当前签名不一致
+APPS-->H5:返回链接已经失效
+else redis的签名和当前签名一致
+APPS->APPS:判断当前用户的邮箱是否已经注册
+alt 用户已经注册
+APPS-->H5:返回用户已经注册的错误码
+else 用户未注册
+APPS->APPS:在redis中取出密码
+APPS->APPS:生成6位字符串盐，对密码使用sha256和盐加密
+APPS->APPS:保存数据库
+APPS->APPS:产生token到redis中
+APPS->MQ:推一条消息到mq中
+note left:userId,token,用户信息完善级别0
+APPS-->H5:返回成功 token,userId,用户信息完善级别0
+end
+end
+end
+H5->H5:判断接口返回码
+alt 返回失败
+H5->H5: 提示错误信息
+else 返回成功
+H5->H5:跳转到第三步页面
+end
+
+
+@enduml

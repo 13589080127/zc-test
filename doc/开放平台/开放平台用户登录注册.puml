@@ -1,0 +1,52 @@
+@startuml
+title:开发平台用户登录注册
+autonumber
+H5->H5:输入用户名密码
+H5->APPS:请求登录
+note left:用户名，密码
+APPS->APPS:根据用户名查询数据库中是否存在
+alt 数据库不存在
+APPS-->H5:返回用户名或者密码错误
+else 数据库存在
+APPS->APPS:判断用户密码是否正确
+alt 密码不正确
+APPS-->H5:返回用户名或者密码错误
+else 密码正确
+APPS->APPS:为当前用户产生登录token，并且去除老的token
+APPS->APPS:查询当前用户信息完善级别
+alt 详细信息未完善
+APPS-->H5:返回用户唯一Id 登录的token，用户信息的完善级别0
+else 详细信息已完善
+APPS-->H5:返回用户唯一Id 登录的token，用户信息的完善级别1
+end
+end
+end
+...
+H5->H5:用户点击注册
+H5->H5:调转到填写用户邮箱和密码页面
+H5->H5:输入用户的邮箱，密码，图片验证码
+H5->APPS:请求服务进行发送邮件
+note left:用户的邮箱，密码
+APPS->APPS:判断用户的邮箱是否已经注册
+alt 用户已经注册
+APPS-->H5:返回用户已经注册的错误码
+else 用户未注册
+APPS->APPS:为当前邮箱产生一个签名
+APPS->APPS:为当前邮箱账号产生一个redis对应的签名和密码存储时间48小时
+APPS->APPS:将激活地址发送给当前用户的邮箱
+APPS->APPS:判断当前用户的邮箱属于哪种类型邮箱
+APPS-->H5:返回类型邮箱，邮箱账号
+H5->H5:判断返回的错误码
+alt 失败错误码
+H5->H5:提示错误信息
+else 成功的返回码
+H5->H5:展示第二步的页面
+H5->MQ:根据邮箱订阅mq的主题监听消息
+MQ-->H5:推送激活成功的消息
+H5->H5:获得用户token,userId,用户信息完善级别
+H5->H5:跳转到第三步页面
+end
+H5->H5:点击重新发送
+H5->APPS:重复 请求服务进行发送短信 流程
+end
+@enduml

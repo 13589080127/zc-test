@@ -1,0 +1,31 @@
+@startuml
+title:用户完善企业信息
+autonumber
+H5->APPS:获取全部的国家信息
+H5->H5:用户输入相关信息
+H5->H5:用户选择国家信息
+H5->APPS:根据国家编号获取省份信息
+APPS->H5:返回省份信息
+H5->H5:用户点击上传图片
+H5->zcFile:上传文件
+zcFile->H5:返回上传文件的地址
+H5->APPS:完善用户信息
+APPS->APPS:判断当前用户信息是否已经被完善
+alt 用户信息已经被完善
+APPS-->H5:返回您已经提交过企业信息，返回审核中的状态
+else 用户信息未完善
+APPS->APPS:保存企业信息，产生申请编号， 状态为未审核，
+APPS->lgm_manage:产生商户信息，绑定支付活动
+note left: 商户名称，商户结算周期
+lgm_manage-->APPS:返回产生结果
+APPS->APPS:产生渠道id\n产生ccks密钥信息\n产生pack
+APPS->lgm_APPS:配置渠道id,ccksId的信息
+lgm_APPS-->APPS:返回配置结果
+APPS->APPS:将pack上传到服务器
+APPS-->H5:返回渠道id，申请编号，审核状态
+H5->H5:展示渠道的申请状态
+H5->H5:点击查看沙盒参数
+H5->APPS:根据渠道号查询沙盒参数
+APPS->H5:返回沙盒参数 商户号，商户名称，渠道id,pack的地址
+end
+@enduml
