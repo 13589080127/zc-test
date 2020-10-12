@@ -1,0 +1,43 @@
+@startuml
+OrderTaskFactory -> Receiver
+class Receiver{
+    - OrderTaskFactory orderTaskFactory;
+    + void receiver(Message<MqttBusDTO<T>> message, Channel channel);
+}
+class OrderTaskInfo{
+    - string pid;//订单号
+    - string tradeType;//交易类型
+    ...
+}
+OrderTaskInfo -> BusTaskDTO
+BusTaskDTO-> OrderTaskDTO
+class BusTaskDTO<T>  {
+   - T data; //业务数据
+   - int delayedTime;//延迟时间
+   - int maxRetryTime;//最大重试次数
+   - int currentRetryTime = 0;//当前重试次数
+}
+
+class OrderTaskDTO{
+ - boolean retryFlag;//是否需要重试
+ - BusTaskDTO<OrderTaskInfo> busTaskDTO;//需要重试的数据
+}
+
+RabbitMessageReceiverService <|-- AbstractRabbitMessageReceiverService
+interface RabbitMessageReceiverService{
+    + void execute(Message<BusTaskDTO<OrderTaskInfo>> message, Channel channel) throws IOException;//执行具体业务
+    + TradeTypeEnum isMyTask(Integer tradeType);//是否属于自己的业务类型
+}
+abstract class AbstractRabbitMessageReceiverService{
+    + void execute(Message<BusTaskDTO<OrderTaskInfo>> message, Channel channel) throws IOException;//执行具体业务
+    + {abstract} OrderTaskDTO childBusiness(Message<BusTaskDTO<OrderTaskInfo>> message, Channel channel);//子类的具体实现
+    + void retryMessage(OrderTaskDTO orderTaskDTO);//重试
+}
+
+RabbitMessageReceiverService->OrderTaskFactory
+class OrderTaskFactory{
+ - List<RabbitMessageReceiverService> list;//所有的具体实现
+ + execute(Message<MqttBusDTO<T>> message, Channel channel);//执行具体消息
+}
+
+@enduml

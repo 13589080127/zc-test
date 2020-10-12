@@ -1,0 +1,32 @@
+@startuml
+title:商户间的消费
+autonumber
+participant 消费商户APP
+participant 天衡服务端 as server
+participant apps
+消费商户APP->消费商户APP:扫收款商户的收款二维码
+消费商户APP->server:请求服务端解析二维码
+server-->apps:请求查询收款商户信息接口
+note left:二维码，付款商户号
+apps->apps:解析二维码得到商户号
+apps->apps:通过付款商户号得到商户的资金账号
+apps->apps:判断资金账号和付款商户号是否存在支付活动关系
+alt 无支付活动
+apps-->server:返回无法进行支付
+else 有支付活动
+apps->apps:查询支付活动信息，查询支付账号的余额信息
+apps-->server:返回支付活动信息和余额信息，收款商户的基本信息
+end
+server->server:判断接口返回结果
+alt 接口返回失败
+server->server:转转错误码
+server-->消费商户APP:返回结果
+else 返回成功
+server-->消费商户APP:返回付款商户信息，产品余额信息
+end
+消费商户APP->消费商户APP:输入需要转账的金额
+消费商户APP->server:确认消费
+server->apps:确认消费
+apps-->server:返回消费结果
+server-->apps:返回消费结果
+@enduml

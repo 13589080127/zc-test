@@ -1,0 +1,18 @@
+@startuml
+title:老用户更换设备登录
+autonumber
+SDK->SDK:点击SDK入口，校验本地是否存在用户se
+alt 不存在用户se
+SDK->TSM:发起申请用户se<font color=blue><b>JD-100008</font>
+TSM-->SDK:返回申请用户se的结果
+SDK->SDK:校验返回的结果信息
+alt 用户是新设备
+SDK->SDK:跳转到用户输入验证码页面，再此页面用户不可返回到上一页面
+SDK->SDK:跳转到用户输入验证码
+SDK->TSM:新设备登录<font color=blue><b>JD-100009</font>
+TSM-->TSM:返回新设备登录结果
+else 用户重复操作
+SDK->SDK:提示用户60秒内不可重复发送短信验证码
+end
+end
+@enduml

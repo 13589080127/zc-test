@@ -1,0 +1,34 @@
+@startuml
+title:扫码付款
+autonumber
+sdk->sdk:点击扫一扫按钮
+sdk->sdk:扫描商户二维码
+sdk->apps:调用服务端扫一扫接口<font color=blue><b>JD-100050</font>
+apps-->sdk:返回扫一扫结果
+sdk->sdk:根据返回的结果判断码类型
+alt 不是识别的二维码
+sdk->sdk:提示不识别的二维码
+else 商户收款码
+sdk->sdk:跳转到输入金额页面
+sdk->sdk:输入付款金额
+sdk->sdk:用户点击下一步
+sdk->apps:查询付款方式<font color=blue><b>JD-100051</font>
+apps->sdk:返回付款方式列表
+sdk->sdk:根据余额标识置灰支付方式
+sdk->sdk:用户选择多产品付款
+sdk->sdk:用户点击确认支付
+sdk->apps:查询用户是否开启免密支付开关<font color=blue><b>JD-100052</font>
+apps->sdk:返回校验结果
+sdk->sdk:判断校验的结果
+alt 用户需要输入支付密码
+sdk->sdk:弹出输入支付密码框
+sdk->sdk:用户输入支付密码
+sdk->apps:请求支付商户接口<font color=blue><b>JD-100053</font>
+apps-->sdk:返回支付结果
+else 用户不需要输入支付密码
+sdk->apps:请求支付商户接口<font color=blue><b>JD-100053</font>
+apps-->sdk:返回支付结果
+end
+sdk->sdk:展示支付结果
+end
+@enduml

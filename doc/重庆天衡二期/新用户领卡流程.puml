@@ -1,0 +1,32 @@
+@startuml
+title:新用户领卡流程
+autonumber
+SDK->TSM:申请设备SE
+TSM-->SDK:返回设备SE
+SDK->TSM:申请用户se<font color=blue><b>JD-100008</font>
+note left:手机号码
+TSM-->SDK:返回用户se cUserId,appId,extUserId
+SDK->APPS:获取用户参数信息<font color=blue><b>JD-100049</font>
+APPS-->SDK:返回用户参数信息
+SDK->SDK:判断用户是否实名
+alt 用户未实名
+SDK->SDK:跳转到用户绑卡页面
+else 用户已经实名
+SDK->SDK:判断用户是否设置了支付密码
+alt 用户未设置支付密码
+SDK->SDK:弹出设置支付密码框
+SDK->APPS:设置支付密码<font color=blue><b>JD-100018</font>
+APPS-->SDK:返回设置结果
+else 用户已经设置支付密码
+SDK->SDK:判断用户是否已经开卡
+alt 用户已经开卡
+SDK->SDK:跳转到SDK支付首页
+else 用户未开卡
+SDK->SDK:根据返回的机构号和品牌开通虚拟卡
+SDK->APPS:申请虚拟卡<font color=blue><b>JD-100038</font>
+APPS-->SDK:返回申请虚拟卡结果
+end
+end
+end
+
+@enduml

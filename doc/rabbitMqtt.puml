@@ -1,0 +1,30 @@
+@startuml
+title:流程
+autonumber
+第三方系统->plat:发起圈存确认
+plat->plat:生成订单信息
+plat->sdzw:发起圈存确认
+sdzw-->plat:返回响应超时
+plat->plat:组装orderTask
+plat->mqtt:放入延迟队列，生命延迟的时间（单位毫秒），重试的最大次数
+plat-->第三方系统:返回交易正在处理
+...
+mqtt->plat:达到延迟时间，收到消息
+plat->sdzw:根据订单号查询圈存确认结果
+sdzw-->plat:返回圈存确认结果
+plat->plat:进行ack消息
+plat->plat:判断查询圈存结果
+alt 圈存成功
+plat->plat:更新数据库状态
+else 圈存失败
+plat->plat:更新数据库状态为失败
+else 依然响应超时
+plat->plat:判断mqttBusDTO的最大重试次数和和当前次数
+alt 当前次数大于等于最大重试次数
+plat->plat:日志报警
+else 当前次数小于最大重试次数
+plat->plat:当前次数加1，并且充重新放回延迟队列
+end
+end
+
+@enduml

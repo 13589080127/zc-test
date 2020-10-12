@@ -1,0 +1,10 @@
+@startuml
+title:钥匙管理
+autonumber
+pro->pro:用户点击钥匙管理
+note left:锁id
+pro->lock:查询锁id对应的钥匙列表
+lock->lock:根据锁id查询用户钥匙关系表，根据分配时间排序
+lock-->pro:返回钥匙信息 锁的图标，用户的手机号码，用户的真实姓名，过期状态
+pro->pro:展示钥匙信息
+@enduml

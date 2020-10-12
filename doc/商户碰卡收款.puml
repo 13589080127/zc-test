@@ -1,0 +1,52 @@
+@startuml
+title:商户碰卡收款
+autonumber
+app->app:商户输入收款金额
+app->app:商户点击收款
+app->app:商户终端进行碰卡
+app->app:nfc权限的校验
+app->app:循环aidList进行读卡
+alt 未找到aid
+app->app:提示错误信息 关键错误码
+else 找到aid
+app->app:判断aid是否在blockAidList中
+alt 在黑名单中
+app->app:提示错误信息关键错误码
+end
+app->app:判断aid是否在白名单中
+alt 不在白名单中
+app->app:提示相对应的信息 提示错误码
+end
+app->app:产生验卡信息
+app->apps:获取支付活动信息 <font color=blue><b>JD-100064</font>
+apps-->app:返回支付活动信息
+app->app:判断是单账户还是多账户支付活动
+alt 单账户
+app->apps:调用无密硬卡收款接口 <font color=blue><b>JD-100062</font>
+apps-->app:返回收款结果
+app->app:判断硬卡收款结果
+alt 收款失败，且错误码是U017
+app->app:跳转到输入硬卡密码页面
+app->app:输入实体卡密码
+app->apps:请求硬卡有密收款接口<font color=blue><b>JD-100063</font>
+apps-->app:返回收款结果
+app->app:根据结果提示不同的信息
+end
+else 多账户
+app->app:跳转到多账户收款页面
+app->app:商户选择收款信息
+app->app:确认收款
+app->apps:调用无密硬卡收款接口 <font color=blue><b>JD-100062</font>
+apps-->app:返回收款结果
+app->app:判断硬卡收款结果
+alt 收款失败，且错误码是U017
+app->app:跳转到输入硬卡密码页面
+app->app:输入实体卡密码
+app->apps:请求硬卡有密收款接口<font color=blue><b>JD-100063</font>
+apps-->app:返回收款结果
+app->app:根据结果提示不同的信息
+end
+
+end
+
+@enduml

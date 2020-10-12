@@ -1,0 +1,15 @@
+@startuml
+title:添加钥匙
+autonumber
+pro->pro:输入用户手机号码，有效期限，开始时间，结束时间
+note left:锁id,用户钥匙信息
+pro->lock:提交服务端，保存锁的钥匙信息
+lock->lock:校验用户是否存在
+alt 用户不存在
+lock->lock:插入用户信息表
+lock->lock:插入用户钥匙信息表
+else 用户存在
+lock->lock:插入用户钥匙信息表
+end
+lock-->pro:返回分配的结果
+@enduml

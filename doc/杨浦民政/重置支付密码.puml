@@ -1,0 +1,42 @@
+@startuml
+title:忘记支付密码
+autonumber
+APP->APP:点击忘记支付密码
+APP->APP:判断用户是否已经实名
+alt 用户已经实名
+APP->APP:用户输入姓名和身份证号
+APP->APPS:根据用户输入的姓名和身份证号发送短信验证码<font color=blue><b>JD-100026</font>
+APPS-->APP:返回短信发送的结果
+APP->APP:用户输入短信验证码
+APP->APPS:校验短信验证码<font color=blue><b>JD-100005</font>
+APPS->APP:返回校验结果
+APP->APPS:重置支付密码<font color=blue><b>JD-100027</font>
+APPS-->APP:返回重置支付密码结果
+else 用户未实名
+APP->APP:跳转添加银行卡页面
+APP->APP:输入持卡人姓名，身份证号，卡号
+APP->APPS:查询银行卡信息 <font color=blue><b>JD-100015</font>
+APPS->APP:返回银行卡信息
+APP->APP:用户输入手机号码 点击下一步
+APP->APPS: 调用绑卡申请接口 发送短信 <font color=blue><b>JD-100016</font>
+APPS->APP:返回绑卡申请结果
+APP->APP:判断申请结果
+alt 申请失败
+APP->APP:提示失败信息
+else 申请成功
+APP->APP:用户输入短信验证码
+APP->APPS:请求服务端确认绑卡接口 <font color=blue><b>JD-100017</font>
+note left:银行卡，短信验证码
+APPS->APP:返回绑卡结果
+APP->APP:判断绑卡结果
+alt 绑卡成功
+APP->APP:跳转到重置支付密码页面
+APP->APPS:重置支付密码
+note left:resetToken,pwd
+APPS-->APP:返回重置支付密码结果
+else 绑卡失败
+APP->APP:展示绑卡失败页面
+end
+end
+end
+@enduml

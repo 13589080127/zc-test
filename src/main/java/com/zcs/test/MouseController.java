@@ -1,28 +1,24 @@
 package com.zcs.test;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.awt.AWTException;
-import java.awt.Dimension;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.InputEvent;
+import java.io.IOException;
 import java.util.Random;
-import java.util.UUID;
-
 
 /**
-  * @author sxc 石新春
-  * @Create date 2007-11-6
-  */
+ *  * @author sxc 石新春
+ *  * @Create date 2007-11-6
+ *  
+ */
 public class MouseController implements Runnable {
     private Dimension dim;
     private Random rand;
     private Robot robot;
     private volatile boolean stop = false;
 
-    public MouseController(){
+    public MouseController() {
         dim = Toolkit.getDefaultToolkit().getScreenSize();
         rand = new Random();
         try {
@@ -31,6 +27,7 @@ public class MouseController implements Runnable {
             ex.printStackTrace();
         }
     }
+
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -44,7 +41,7 @@ public class MouseController implements Runnable {
      */
     @Override
     public void run() {
-        while (!stop){
+        while (!stop) {
             int x = rand.nextInt(dim.width);
             System.out.println(x);
             int y = rand.nextInt(dim.height);
@@ -53,18 +50,21 @@ public class MouseController implements Runnable {
             robot.mousePress(InputEvent.BUTTON1_MASK);
             try {
                 Thread.sleep(2000);
-            }catch (InterruptedException ex){
+            } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         }
     }
+
     public synchronized void stop() {
         stop = true;
     }
-    public static void main(String[] args) {
-        while (true){
-            System.out.println(RandomStringUtils.randomNumeric(5));;
-        }
+
+    public static void main(String[] args) throws IOException {
+        //加载xml配置文件启动
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("META-INF.spring/provider.xml");
+        context.start();
+        System.in.read(); // 按任意键退出
     }
 }
 

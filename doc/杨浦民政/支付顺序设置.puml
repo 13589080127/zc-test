@@ -1,0 +1,18 @@
+@startuml
+title:支付顺序设置
+autonumber
+APP->APP:用户点击支付顺序设置
+APP->APPS:查询用户支付方式列表 <font color=blue><b>JD-100044</font>
+APPS-->APP:返回用户自定义扣款顺序开关和支付卡顺序
+APP->APP:判断用户的自定义支付顺序开关
+alt 打开了自定义支付顺序
+APP->APP:展示支付卡顺序的列表信息
+end
+alt 用户点击打开自定义扣款顺序
+APP->APPS:请求服务端设置扣款顺序接口 <font color=blue><b>JD-100045</font>
+APPS-->APP:返回设置结果
+else 用户点击关闭自定义扣款顺序
+APP->APPS:请求服务端设置扣款顺序接口 <font color=blue><b>JD-100045</font>
+APPS-->APP:返回设置结果
+end
+@enduml

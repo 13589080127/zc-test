@@ -1,0 +1,35 @@
+@startuml
+title:充值虚拟卡
+autonumber
+APP->APPS:根据被充值卡号查询卡详情 <font color=blue><b>JD-100019</font>
+note left:卡号
+APPS->APP:返回卡详情信息
+APP->APP:循环展示返回的产品列表，产品名称，产品余额，是否可充值/提现按钮
+APP->APP:点击账单详情
+APP->APPS:查询账单信息 <font color=blue><b>JD-100014</font>
+APPS->APP:返回账单信息列表
+APP->APP:展示账单列表
+====
+APP->APP:用户点击充值按钮
+APP->APPS:根据当前卡号查询充值方式列表<font color=blue><b>JD-100020</font>
+note left: cardId 卡号
+APPS->APP:返回充值方式列表
+APP->APP:展示充值卡品牌名称，尾号，当前余额信息，根据返回的模式不同展示可充值的支付方式
+APP->APP:用户输入金额,点击下一步
+APP->APP:输入支付密码
+APP->APPS:请求校验支付密码接口<font color=blue><b>JD-100011</font>
+APPS-->APP:返回支付密码校验结果 payPwdPassToken
+APP->APP:判断用户选择的充值方式
+alt 用户选择银行卡
+APP->APPS:银行卡充值申请<font color=blue><b>JD-100021</font>
+APPS-->APP:返回发送短信的结果
+APP->APP:跳转到输入短信验证码页面，输入短信验证码内容
+APP->APPS:银行卡确认充值<font color=blue><b>JD-100022</font>
+APPS-->APP:返回确认充值结果
+APP->APP:展示充值结果
+else 用户选择虚拟卡
+APP->APPS:虚拟卡充值虚拟卡 <font color=blue><b>JD-100039</font>
+APPS->APP:返回虚拟卡充值结果
+end
+
+@enduml

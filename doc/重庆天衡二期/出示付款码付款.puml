@@ -1,0 +1,32 @@
+@startuml
+title:出示付款码
+autonumber
+
+JDAPP->JDAPP:点击付款按钮
+JDAPP->JDAPP:跳转出示付款码页面
+JDAPP->APPS:调取获取支付方式卡号列表<font color=blue><b>JD-100034</font>
+APPS->JDAPP:返回结果
+JDAPP->APPS:调取获取二维码接口<font color=blue><b>JD-100033</font>
+APPS->JDAPP:返回结果
+JDAPP->JDAPP:只有一个付款方式不允许进行点击
+====
+JDSHAPP->JDSHAPP:商户输入收款金额点击收款
+JDSHAPP-->JDAPP:商户版扫描个人版二维码
+JDSHAPP->APPS:调取软卡扫码付-支付活动列表接口<font color=blue><b>JD-100035</font>
+APPS->JDSHAPP:返回结果
+JDSHAPP->APPS:调取商户软卡收款接口<font color=blue><b>JD-100036</font>
+APPS->APPS:判断是否需要密码
+alt 需要密码
+APPS->JDAPP:推送软卡支付需要输入支付密码 consume_auth
+JDAPP->JDAPP:跳转输入支付密码页面，输入密码
+JDAPP->APPS:调取校验支付密码接口<font color=blue><b>JD-100011</font>
+APPS->JDAPP:返回结果
+JDAPP->APPS:调取个人软卡付款接口<font color=blue><b>JD-100037</font>
+APPS->JDAPP:返回结果
+APPS->JDSHAPP:推送支付结果 consume_result
+else 不需要密码
+APPS->JDSHAPP:返回结果
+APPS->JDAPP:推送支付结果
+end
+
+@enduml

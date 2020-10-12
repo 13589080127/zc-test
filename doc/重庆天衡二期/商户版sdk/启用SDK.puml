@@ -1,0 +1,21 @@
+@startuml
+title:商户版启动SDK
+autonumber
+sdk->tsm:申请设备SE
+tsm-->sdk:返回设备SE
+sdk->apps:用户登录<font color=blue><b>JD-100059</font>
+note left:商户号
+apps->apps:不校验登录密码
+apps->apps:不校验是否是新终端
+apps->apps:正常登录产生和简兑商户版一样的数据
+apps-->sdk:返回登录结果token，cuserid
+sdk->sdk:根据cuserId查询本地用户se
+alt 未找到用户se
+sdk->tsm:根据cuserId申请用户se(原接口)
+tsm-->sdk:返回用户se
+end
+sdk->apps:注册终端<font color=blue><b>JD-100057</font>
+apps-->sdk:返回注册结果
+sdk->apps:终端参数下载<font color=blue><b>JD-100058</font>
+apps-->sdk:返回终端参数
+@enduml

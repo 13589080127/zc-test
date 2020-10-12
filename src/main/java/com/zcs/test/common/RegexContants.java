@@ -1,5 +1,7 @@
 package com.zcs.test.common;
 
+import java.sql.SQLOutput;
+
 /**
  * 正则常量类
  */
@@ -31,6 +33,5 @@ public interface RegexContants {
 
     /**金额正则表达式 正整数*/
     String MONEY_REGEX = "^[0-9]*[1-9][0-9]*$";
-
 
 }

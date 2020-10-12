@@ -1,0 +1,43 @@
+@startuml
+title:获取钥匙列表
+autonumber
+pro->pro:点击芝麻开门
+pro->pro:判断本地是否存在通行证id和通行证文件
+alt 通行证文件不存在，存在通行证id
+pro->tsm: 通过通行证id找回虚拟卡文件
+tsm-->pro:返回虚拟卡文件
+else 通行证id不存在
+pro->tsm:查询默认卡号
+note left:cUserId,appId
+tsm->tsm:查询是否开通默认卡片
+tsm-->pro:返回查询结果
+pro->pro:判断查询结果
+alt 存在通行证id
+pro->tsm:根据通行证id找回虚拟卡文件
+tsm-->pro:返回虚拟卡文件
+else 不存在通行证id
+pro->tsm:开通虚拟卡
+note left: 机构号，品牌号，appId,cUserId
+tsm-->pro:返回虚拟卡文件，通行证id
+pro->pro:保存虚拟卡文件，通行证id
+end
+pro->com:获取钥匙列表
+note left:cardId 同行证id
+com->com:根据用户的token获取用户信息
+com->lock:获取钥匙列表
+note left: 手机号码，用户的姓名，appId
+lock->lock:根据手机号码，appId查询用户信息
+lock->lock:判断用户是否存在
+alt 用户存在
+lock->lock:更新用户实名信息和通行证关系，更新cuserId,extUserId关系
+else 用户不存在
+lock-->com:返回空的钥匙列表
+end
+lock->lock:查询钥匙列表信息
+lock-->com:返回钥匙列表
+end
+com-->pro:返回钥匙列表
+
+
+
+@enduml

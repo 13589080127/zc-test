@@ -1,0 +1,20 @@
+@startuml
+title:小额免密设置
+autonumber
+APP->APP:点击小额免密设置
+APP->APP:弹出校验支付密码框
+APP->APP:输入支付密码
+APP->APPS:校验支付密码 <font color=blue><b>JD-100011</font>
+APPS-->APP:返回校验支付密码结果
+APP->APP:校验通过跳转到设置小额免密开关页面
+alt 用户点击打开小额免密设置
+APP->APP:展示免密金额列表，本地写死（200.00元/笔，500.00元/笔,800.00元/笔,1000.00元/笔）
+APP->APPS:请求服务端设置小额免密开关为打开状态 <font color=blue><b>JD-100043</font>
+note left: {"userParams":{"small_switch":"1","small_amount":"20000"}}
+APPS-->APP:返回设置开关结果
+else 用户点击关闭小额免密设置
+APP->APPS:请求服务端设置小额免密开关为关闭状态 <font color=blue><b>JD-100043</font>
+note left:{"userParams":{"small_switch":"0","small_amount":"0"}}
+APPS-->APP:返回设置开关结果
+end
+@enduml

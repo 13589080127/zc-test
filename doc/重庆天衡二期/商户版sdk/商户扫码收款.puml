@@ -1,0 +1,24 @@
+@startuml
+title:商户扫码收款
+autonumber
+sdk->sdk:收入收款金额
+sdk->sdk:点击确认收款
+sdk->sdk:打开扫一扫 扫描付款二维码
+sdk->apps:请求扫码付，获取支付活动列表<font color=blue><b>JD-100060</font>
+apps-->sdk:返回支付活动列表
+sdk->sdk:判断接口返回结果
+alt 处理成功
+sdk->sdk:判断支付活动列表个数
+alt 只有一个支付活动
+sdk->sdk:使用第一个支付活动编码和信息进行收款，如有折扣则计算折扣
+else 多个支付活动
+sdk->sdk:展示多个支付活动信息，让商户选择收款，如后折扣则计算折扣，且展示相应的折扣信息
+end
+sdk->apps:请求服务端收款<font color=blue><b>JD-100061</font>
+apps-->sdk:返回收款结果
+sdk->sdk:展示收款结果和折扣信息
+else 处理失败
+sdk->sdk:展示返回结果
+end
+
+@enduml

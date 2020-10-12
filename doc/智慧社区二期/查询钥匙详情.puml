@@ -1,0 +1,7 @@
+@startuml
+title:查询钥匙详情
+autonumber
+pro->lock:查询钥匙列表
+lock-->pro:返回钥匙列表
+pro->pro:点击详情，从钥匙列表中获取钥匙展示
+@enduml

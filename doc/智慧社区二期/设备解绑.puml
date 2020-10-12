@@ -1,0 +1,27 @@
+@startuml
+title:设备解绑
+autonumber
+pro->pro:用户点击设备解绑
+pro->lock:调用发送短信接口
+note left:模板id,当前用户手机号码
+lock->lock:根据短信模板发送短信
+lock-->pro:返回发送短信结果
+pro->lock:请求服务端解绑设备
+note left:锁id，是否清空钥匙配置信息选项，短信模板id,发送短信用的手机号码
+lock->lock:校验用户和锁的关系
+alt 用户不是当前锁的管理员
+lock-->pro:返回用户权限错误提示信息
+else 是锁的管理员
+lock->lock:校验短信验证码
+alt 校验失败
+lock->lock:返回校验失败提示信息
+end
+lock->lock:判断用户是否清空锁的钥匙配置
+alt 不清空钥匙配置
+lock->lock:删除当前用户钥匙管理员的信息
+else 清空钥匙配置
+lock->lock:删除当前锁的所有钥匙信息，修改锁的名称和地址为空
+end
+end
+lock-->pro:返回解绑的结果
+@enduml

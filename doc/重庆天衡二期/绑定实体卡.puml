@@ -1,0 +1,20 @@
+@startuml
+title:绑定实体卡
+sdk->apps:查询当前虚拟卡是否存在可绑定的实体卡列表<font color=blue><b>JD-100054</font>
+apps-->sdk:返回实体卡列表
+sdk->sdk:判断返回结果
+alt 正确返回
+sdk->sdk:展示实体卡列表
+sdk->sdk:用户选择一张卡进行绑定
+sdk->sdk:用户确认绑定 判断绑定当前实体卡是否需要输入密码
+alt 需要密码
+sdk->sdk:弹出密码框 输入支付密码
+sdk->apps:请求服务端绑定实体卡<font color=blue><b>JD-100055</font>
+else  不需要密码
+sdk->apps:请求服务端绑定实体卡<font color=blue><b>JD-100055</font>
+end
+apps-->sdk:返回绑定结果
+else 返回错误码为 R139
+sdk->sdk:暂无可绑定的实体卡，请先到发卡机构申领实体卡后再进行绑定
+end
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+title:卡包列表
+autonumber
+APP->APP:用户点击卡包列表
+APP->APP:判断用户是否已经实名
+alt 用户已经实名
+APP->APPS: 查询已绑定的虚拟卡列表<font color=blue><b>JD-100023</font>
+APPS->APP:返回当前用户绑定的虚拟卡列表
+APP->APP:展示虚拟卡信息
+APP->APP:点击虚拟卡查询卡详情
+APP->APPS:查询卡详情 <font color=blue><b>JD-100019</font>
+note left: cardId
+APPS->APP:返回卡详情信息
+APP->APP:展示卡详情
+==添加虚拟卡片==
+APP->APP:点击添加虚拟卡
+APP->APPS:查询未绑定的虚拟卡列表
+APPS-->APP:返回待绑定的虚拟卡列表
+APP->APP:展示虚拟卡列表
+APP->APP:用户点击绑定
+APP->APPS:申请虚拟卡 <font color=blue><b>JD-100038</font>
+APPS->APP:返回虚拟卡信息
+else 用户未实名
+APP->APP:提示用户 您还没有进行实名认证，无法进行交易，请先绑定银行卡完成实名认证。
+end
+@enduml

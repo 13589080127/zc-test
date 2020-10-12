@@ -1,0 +1,69 @@
+@startuml
+title:电商支付
+autonumber
+participant app
+participant appWebview
+participant 天衡服务端 as server
+participant sdk
+participant web
+participant apps
+app->appWebview:打开电商页面
+appWebview->appWebview:选择商品，使用会员卡进行支付
+appWebview->server:请求支付
+server->apps:请求下单接口
+note left:收款信息，
+apps-->server:返回支付订单号
+server-->appWebview:返回支付订单号
+appWebview->app:调用app支付接口
+app->sdk:调用支付接口
+note left:支付订单号
+sdk->web:调起web支付页面
+note left:支付订单号
+web->apps:根据订单号获取支付活动<font color=blue><b>JD-100065</font>
+apps->apps:校验订单的状态
+alt 支付成功
+apps-->web:订单已经被支付
+web->web:提示用户错误信息
+else 订单未支付
+apps->apps:校验商户信息，校验订单唯一性
+apps->apps:获取当前用户的会员卡和商户的支付活动信息
+apps->apps:校验是否满足小额免密
+alt 无支付活动信息
+apps-->web:返回无支付活动信息
+else 有支付活动信息
+apps->apps:查询当前支付卡号的产品余额信息，并且校验余额是否充足
+apps->web:返回支付活动信息，商户信息，收款信息，token,是否需要输入支付密码标识
+web->web:根据不同的响应信息跳转不同的页面
+alt 响应失败
+web->web:提示错误信息
+else 响应成功
+web->web:展示收款页面
+web->web:点击确认支付
+web->web:判断是否需要免密
+alt 需要支付密码
+web->web:弹出密码框校验支付密码
+end
+web->apps:确认支付<font color=blue><b>JD-100066</font>
+note left:小额免密token,支付密码token(否)支付活动token
+apps->apps:校验token信息
+apps->sdzw:完成支付
+sdk->apps:返回支付结果
+apps->apps:判断支付结果
+apps->apps:更新订单状态,删除token
+alt 支付成功
+apps-->web:返回前端成功
+apps->server:回调接口通知支付结果
+else 支付失败
+apps-->web:返回前端失败
+apps->server:回调接口通知支付结果
+else 支付超时
+apps->apps:加入超时任务查询
+apps->apps:查询结果后，根据支付结果更改订单状态，回调接口通知支付结果
+end
+web->web:判断支付结果，根据支付结果展示不同的页面
+web-->sdk:调用回调方法通知支付结果
+sdk->app:调用回调方法通知支付结果
+end
+end
+end
+@enduml

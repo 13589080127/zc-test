@@ -1,0 +1,8 @@
+@startuml
+title:查询设备信息
+autonumber
+pro->lock:根据锁id查询锁的信息
+lock->lock:根据锁id查询锁表
+lock->lock:查询锁的钥匙用户数（用户钥匙表）
+lock-->pro:返回查询结果 卡号，用户数，锁的地址
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+title:用户实名认证
+autonumber
+pro->pro:用户点击实名认证
+pro->pro:用户输入姓名身份证号，短信验证码
+pro->com:进行实名认证
+com->com:保持原来实名认证的流程
+com->com:不再到交换进行开卡逻辑
+com-->pro:返回实名认证的结果
+pro->pro:判断接口返回的结果
+alt 实名认证失败
+pro->pro:提示实名认证失败的信息
+else 实名认证成功
+pro->tsm:查询默认卡片信息
+tsm-->pro:返回开卡的参数信息
+pro->tsm:开卡接口请求开卡
+note left: brhId,brandId
+tsm->pro:返回开卡结果
+end
+@enduml
